@@ -42,16 +42,10 @@ function lunar_theme_setup(): void {
 	// Responsive embeds (e.g. YouTube gameplay clips referenced in articles).
 	add_theme_support( 'responsive-embeds' );
 
-	register_nav_menus(
-		array(
-			// Only ONE fixed location is registered. The per-game secondary
-			// menu is NOT a second registered location — it is resolved
-			// dynamically at render time via wp_nav_menu_args +
-			// get_term_meta(), overriding which menu ID gets rendered
-			// under this same 'primary' location. See header.php.
-			'primary' => __( 'Primary Menu', 'lunar' ),
-		)
-	);
+	// No nav menu location is registered here. The site header renders
+	// either a static link or a specific menu resolved by ID (see
+	// inc/game-context.php + header.php) — there is no fixed "primary"
+	// location for an admin to manually assign a menu to.
 }
 add_action( 'after_setup_theme', 'lunar_theme_setup' );
 
