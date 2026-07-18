@@ -1,0 +1,53 @@
+/*
+Theme Name:        Lunar
+Theme URI:         https://github.com/irvangen09/lunar-themes
+Author:            irvangen09
+Author URI:        https://github.com/irvangen09
+Description:       Presentation layer for a game documentation wiki. Handles templates, layout, and styling only — all data and Gutenberg blocks are provided by the companion plugin, LunarCore.
+Version:           0.1.0
+Requires at least: 6.4
+Tested up to:      6.7
+Requires PHP:      8.0
+License:           GPL-2.0-or-later
+License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain:       lunar
+Requires Plugins:  lunar-core
+
+This file is required by WordPress to recognize a valid theme. It only
+holds the header above plus a minimal reset. Design tokens (colors,
+fonts) live in assets/css/tokens.css, and component styles are split
+into their own files, enqueued via inc/enqueue.php.
+*/
+
+/* ---------------------------------------------------------------------
+   Minimal reset — component-level styling is intentionally NOT here.
+   ------------------------------------------------------------------ */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	margin: 0;
+	background: var( --color-background, #f2ecdc );
+	color: var( --color-text, #2b2015 );
+	font-family: var( --font-body, serif );
+	line-height: 1.7;
+}
+
+img,
+svg {
+	max-width: 100%;
+	height: auto;
+	display: block;
+}
+
+a {
+	color: var( --color-accent, #b2512e );
+}
