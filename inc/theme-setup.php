@@ -42,6 +42,11 @@ function lunar_theme_setup(): void {
 	// Responsive embeds (e.g. YouTube gameplay clips referenced in articles).
 	add_theme_support( 'responsive-embeds' );
 
+	// Native Pages don't support Excerpt by default. Enabled here so the
+	// Homepage (a static Page) can have an editable hero description,
+	// independent of the Page's main content blocks.
+	add_post_type_support( 'page', 'excerpt' );
+
 	// No nav menu location is registered here. The site header renders
 	// either a static link or a specific menu resolved by ID (see
 	// inc/game-context.php + header.php) — there is no fixed "primary"
