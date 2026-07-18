@@ -1,0 +1,51 @@
+/**
+ * Design token values for the "Cozy Almanac" visual identity.
+ *
+ * Kept in its own file (rather than inline in style.css) so the
+ * color/font reference stays easy to find and update later without
+ * digging through the codebase.
+ *
+ * Values are hardcoded here rather than exposed via the WordPress
+ * Customizer — the site is built and maintained by a single
+ * developer/owner, so a Customizer UI would add complexity with no
+ * real benefit.
+ *
+ * Font files themselves are NOT loaded here (no @import — that would
+ * block CSS parsing). They are enqueued separately as a proper
+ * <link>/wp_enqueue_style call in inc/enqueue.php.
+ */
+
+:root {
+	/* Base Colors */
+	--color-background: #f2ecdc;
+	--color-surface: #fbf8f0;
+	--color-surface-2: #f7f1e4;
+	--color-border: #d9cbaa;
+	--color-text: #2b2015;
+	--color-text-muted: #6b5d46;
+	--color-accent: #b2512e;
+	--color-accent-secondary: #4b6b43;
+
+	/* Functional Colors */
+	--color-success: #4b7752;
+	--color-warning: #c98a2e;
+	--color-error: #a23b2e;
+	--color-info: #5b7c99;
+
+	/* Rarity Colors (Badge System) */
+	--color-rarity-common: #a9825c;
+	--color-rarity-uncommon: #a15c32;
+	--color-rarity-rare: #93a0a6;
+	--color-rarity-epic: #c98a2e;
+	--color-rarity-legendary: #6b5b95;
+
+	/* Typography */
+	--font-display: 'Fraunces', serif;
+	--font-body: 'Lora', serif;
+	--font-mono: 'IBM Plex Mono', monospace;
+
+	/* Border Radius & Elevation */
+	--radius-card: 8px;
+	--radius-inline: 4px;
+	--shadow-color: rgba( 60, 40, 20, 0.08 );
+}
