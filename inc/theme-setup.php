@@ -46,6 +46,15 @@ function lunar_theme_setup(): void {
 	// either a static link or a specific menu resolved by ID (see
 	// inc/game-context.php + header.php) — there is no fixed "primary"
 	// location for an admin to manually assign a menu to.
+
+	// The footer links (About, Contact, Privacy, etc.) ARE a normal,
+	// admin-managed menu location — unlike the header nav, there is no
+	// per-context logic involved here.
+	register_nav_menus(
+		array(
+			'footer' => __( 'Footer Menu', 'lunar' ),
+		)
+	);
 }
 add_action( 'after_setup_theme', 'lunar_theme_setup' );
 
