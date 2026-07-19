@@ -47,17 +47,16 @@ function lunar_theme_setup(): void {
 	// independent of the Page's main content blocks.
 	add_post_type_support( 'page', 'excerpt' );
 
-	// No nav menu location is registered here. The site header renders
-	// either a static link or a specific menu resolved by ID (see
-	// inc/game-context.php + header.php) — there is no fixed "primary"
-	// location for an admin to manually assign a menu to.
-
-	// The footer links (About, Contact, Privacy, etc.) ARE a normal,
-	// admin-managed menu location — unlike the header nav, there is no
-	// per-context logic involved here.
+	// The header nav has two states that are never shown at the same time:
+	// "primary" is a normal, admin-managed menu shown outside any game
+	// context (e.g. the Homepage), while a per-game menu is resolved by
+	// ID rather than by location whenever a game context is active (see
+	// inc/game-context.php + header.php). The footer links follow the
+	// same simple, location-based pattern as "primary".
 	register_nav_menus(
 		array(
-			'footer' => __( 'Footer Menu', 'lunar' ),
+			'primary' => __( 'Main Menu', 'lunar' ),
+			'footer'  => __( 'Footer Menu', 'lunar' ),
 		)
 	);
 }
