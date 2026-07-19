@@ -1,0 +1,125 @@
+/**
+ * Single Wiki Artikel page styles — loaded only on is_singular('wiki_artikel').
+ *
+ * Infobox's own "card" appearance (background, border, radius, field
+ * grid) is already styled by the block itself in the companion plugin.
+ * This file only adds the float + sticky POSITIONING on top of it —
+ * the block's own stylesheet explicitly leaves that to the theme.
+ */
+
+.lunar-article {
+	max-width: 1000px;
+	margin: 0 auto;
+	padding: 24px 40px 64px;
+}
+
+/* ---------------------------------------------------------------------
+   Infobox positioning (the block itself only sets max-width: 320px and
+   its own card appearance — float/sticky is layout, so it belongs here)
+   ------------------------------------------------------------------ */
+
+.lunar-infobox {
+	float: right;
+	margin: 0 0 24px 32px;
+	position: sticky;
+	top: 24px;
+}
+
+@media ( max-width: 640px ) {
+	.lunar-infobox {
+		float: none;
+		width: 100%;
+		max-width: none;
+		margin: 0 0 24px;
+		position: static;
+	}
+}
+
+/* ---------------------------------------------------------------------
+   Article header (badge, title, tagline)
+   ------------------------------------------------------------------ */
+
+.lunar-article__title {
+	font-family: var( --font-display );
+	font-size: 2.6rem;
+	font-weight: 700;
+	line-height: 1.15;
+	margin: 14px 0 8px;
+}
+
+.lunar-article__tagline {
+	font-family: var( --font-body );
+	font-style: italic;
+	color: var( --color-text-muted );
+	font-size: 1.05rem;
+	margin: 0 0 24px;
+}
+
+/* ---------------------------------------------------------------------
+   Article body
+   ------------------------------------------------------------------ */
+
+/*
+ * Fix: block-level content (tables, images, grid-based blocks like
+ * Gallery/Table) does not naturally shrink around a float the way text
+ * does — without this, it renders full width and visually overlaps the
+ * floated Infobox instead of flowing beside it. Forcing each top-level
+ * block to establish its own Block Formatting Context (via overflow)
+ * makes the browser correctly narrow it around the float instead.
+ *
+ * Excluded: .lunar-infobox itself (no need, and it's the float source),
+ * and alignwide/alignfull blocks (those intentionally bleed past the
+ * container via negative margins — clipping would cut them off).
+ */
+.lunar-article__content > *:not( .lunar-infobox ):not( .alignwide ):not( .alignfull ) {
+	overflow: hidden;
+}
+
+.lunar-article__content p {
+	margin: 0 0 20px;
+}
+
+.lunar-article__content h2 {
+	/* Always spans full width, even if the Infobox float is still active
+	   at this point in the content (e.g. a short intro paragraph) —
+	   section headings should never get squeezed narrow next to it. */
+	clear: both;
+	font-family: var( --font-display );
+	font-size: 1.5rem;
+	font-weight: 700;
+	margin: 36px 0 12px;
+	padding-top: 8px;
+	border-top: 1px solid var( --color-border );
+}
+
+/* ---------------------------------------------------------------------
+   Article footer ("Terakhir diperbarui" + update notes)
+   ------------------------------------------------------------------ */
+
+.lunar-article__meta {
+	clear: both;
+	margin-top: 40px;
+	padding-top: 16px;
+	border-top: 1px solid var( --color-border );
+	font-size: 0.85rem;
+	color: var( --color-text-muted );
+}
+
+.lunar-article__updated {
+	margin: 0 0 8px;
+}
+
+.lunar-article__update-notes {
+	margin: 0;
+	padding-left: 20px;
+}
+
+.lunar-article__update-notes li {
+	margin-bottom: 4px;
+}
+
+@media ( max-width: 640px ) {
+	.lunar-article {
+		padding: 16px 20px 40px;
+	}
+}

@@ -69,5 +69,15 @@ function lunar_enqueue_assets(): void {
 		array( 'lunar-layout' ),
 		wp_get_theme()->get( 'Version' )
 	);
+
+	// Page-specific stylesheets — only loaded on the template that needs them.
+	if ( is_singular( 'wiki_artikel' ) ) {
+		wp_enqueue_style(
+			'lunar-single',
+			get_template_directory_uri() . '/assets/css/single.css',
+			array( 'lunar-style' ),
+			filemtime( get_template_directory() . '/assets/css/single.css' )
+		);
+	}
 }
 add_action( 'wp_enqueue_scripts', 'lunar_enqueue_assets' );
