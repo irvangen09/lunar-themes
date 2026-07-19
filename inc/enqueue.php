@@ -57,9 +57,16 @@ function lunar_enqueue_assets(): void {
 	);
 
 	wp_enqueue_style(
+		'lunar-layout',
+		get_template_directory_uri() . '/assets/css/layout.css',
+		array( 'lunar-tokens' ),
+		filemtime( get_template_directory() . '/assets/css/layout.css' )
+	);
+
+	wp_enqueue_style(
 		'lunar-style',
 		get_stylesheet_uri(),
-		array( 'lunar-tokens' ),
+		array( 'lunar-layout' ),
 		wp_get_theme()->get( 'Version' )
 	);
 }

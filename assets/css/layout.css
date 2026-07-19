@@ -1,0 +1,286 @@
+/**
+ * Layout & shared component styles — loaded on every page.
+ * Covers: site header, footer, breadcrumb, badge, filter pill/checkbox,
+ * and a small ".lunar-container" utility reused by page-specific
+ * stylesheets (single.css, homepage.css, archive.css, search.css).
+ */
+
+/* ---------------------------------------------------------------------
+   Shared layout utility
+   ------------------------------------------------------------------ */
+
+.lunar-container {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 0 40px;
+}
+
+.lunar-site-wrapper {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+/* ---------------------------------------------------------------------
+   Skip link
+   ------------------------------------------------------------------ */
+
+.lunar-skip-link.screen-reader-text {
+	position: absolute;
+	left: -9999px;
+	top: 0;
+	z-index: 100000;
+	background: var( --color-surface );
+	color: var( --color-text );
+	padding: 8px 16px;
+	border-radius: var( --radius-inline );
+}
+
+.lunar-skip-link.screen-reader-text:focus {
+	left: 8px;
+	top: 8px;
+}
+
+/* ---------------------------------------------------------------------
+   Site header
+   ------------------------------------------------------------------ */
+
+.lunar-site-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 20px;
+	padding: 16px 40px;
+	background: var( --color-surface );
+	border-bottom: 1px solid var( --color-border );
+	flex-wrap: wrap;
+}
+
+.lunar-brand {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-family: var( --font-display );
+	font-size: 1.4rem;
+	font-weight: 700;
+	color: var( --color-text );
+	text-decoration: none;
+}
+
+.lunar-brand__mark {
+	color: var( --color-accent );
+	font-size: 1.2rem;
+}
+
+.lunar-site-nav {
+	display: flex;
+	align-items: center;
+}
+
+.lunar-site-nav > a {
+	color: var( --color-text-muted );
+	font-family: var( --font-body );
+	font-size: 0.95rem;
+	text-decoration: none;
+}
+
+.lunar-site-nav__list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px 28px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.lunar-site-nav__list a {
+	color: var( --color-text-muted );
+	font-family: var( --font-body );
+	font-size: 0.95rem;
+	text-decoration: none;
+}
+
+.lunar-site-nav > a:hover,
+.lunar-site-nav__list a:hover {
+	color: var( --color-accent );
+	text-decoration: underline;
+}
+
+.lunar-search-icon {
+	width: 38px;
+	height: 38px;
+	flex-shrink: 0;
+	border: 1px solid var( --color-border );
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var( --color-text-muted );
+	text-decoration: none;
+}
+
+.lunar-search-icon:hover {
+	color: var( --color-accent );
+	border-color: var( --color-accent );
+}
+
+.lunar-search-icon svg {
+	display: block;
+}
+
+/* ---------------------------------------------------------------------
+   Site footer
+   ------------------------------------------------------------------ */
+
+.lunar-site-footer {
+	margin-top: auto;
+	background: var( --color-surface );
+	border-top: 1px solid var( --color-border );
+	padding: 20px 40px;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	font-size: 0.85rem;
+	color: var( --color-text-muted );
+}
+
+.lunar-site-footer__links-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 18px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.lunar-site-footer__links-list a {
+	color: var( --color-text-muted );
+	text-decoration: none;
+}
+
+.lunar-site-footer__links-list a:hover {
+	color: var( --color-accent );
+	text-decoration: underline;
+}
+
+.lunar-site-footer__notice {
+	margin: 0;
+	font-size: 0.8rem;
+}
+
+/* ---------------------------------------------------------------------
+   Breadcrumb
+   ------------------------------------------------------------------ */
+
+.lunar-breadcrumb {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 18px 40px 0;
+	font-size: 0.85rem;
+	color: var( --color-text-muted );
+}
+
+.lunar-breadcrumb__list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.lunar-breadcrumb__item {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.lunar-breadcrumb__item:not( :last-child )::after {
+	content: '\203A';
+	color: var( --color-border );
+}
+
+.lunar-breadcrumb__item a {
+	color: var( --color-text-muted );
+	text-decoration: none;
+}
+
+.lunar-breadcrumb__item a:hover {
+	color: var( --color-accent );
+	text-decoration: underline;
+}
+
+.lunar-breadcrumb__item span[aria-current] {
+	color: var( --color-text );
+	font-weight: 500;
+}
+
+/* ---------------------------------------------------------------------
+   Badge (content-type badge, used on single article, cards, results)
+   ------------------------------------------------------------------ */
+
+.lunar-badge {
+	display: inline-block;
+	font-family: var( --font-mono );
+	font-size: 0.7rem;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	padding: 4px 10px;
+	border-radius: var( --radius-inline );
+	background: var( --color-surface-2 );
+	color: var( --color-accent-secondary );
+	border: 1px solid var( --color-border );
+}
+
+/* ---------------------------------------------------------------------
+   Filter pill (Game archive content-type filter, Search Tipe Konten filter)
+   ------------------------------------------------------------------ */
+
+.lunar-filter-bar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 20px 40px 0;
+}
+
+.lunar-filter-pill {
+	font-family: var( --font-mono );
+	font-size: 0.78rem;
+	padding: 7px 16px;
+	border-radius: 999px;
+	border: 1px solid var( --color-border );
+	background: var( --color-surface );
+	color: var( --color-text-muted );
+	text-decoration: none;
+}
+
+.lunar-filter-pill:hover {
+	text-decoration: underline;
+}
+
+.lunar-filter-pill.is-active {
+	background: var( --color-accent );
+	border-color: var( --color-accent );
+	color: var( --color-surface );
+	text-decoration: none;
+}
+
+/* ---------------------------------------------------------------------
+   Filter checkbox (Search's "Judul Game" list)
+   ------------------------------------------------------------------ */
+
+.lunar-filter-check {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 0.88rem;
+	color: var( --color-text );
+}
+
+.lunar-filter-check input {
+	accent-color: var( --color-accent );
+}
