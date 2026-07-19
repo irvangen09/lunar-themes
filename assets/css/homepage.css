@@ -1,0 +1,160 @@
+/**
+ * Homepage styles — loaded only on is_front_page().
+ */
+
+/* ---------------------------------------------------------------------
+   Hero
+   ------------------------------------------------------------------ */
+
+.lunar-hero {
+	max-width: 1000px;
+	margin: 0 auto;
+	padding: 56px 40px 32px;
+	text-align: center;
+}
+
+.lunar-hero__title {
+	font-family: var( --font-display );
+	font-size: 2.4rem;
+	font-weight: 700;
+	margin: 0 0 12px;
+}
+
+.lunar-hero__description {
+	color: var( --color-text-muted );
+	font-size: 1.05rem;
+	max-width: 560px;
+	margin: 0 auto;
+}
+
+/* ---------------------------------------------------------------------
+   Section shell (shared by "Jelajahi Game" and "Artikel Terbaru")
+   ------------------------------------------------------------------ */
+
+.lunar-section {
+	max-width: 1000px;
+	margin: 0 auto;
+	padding: 24px 40px 48px;
+}
+
+.lunar-section__label {
+	font-family: var( --font-mono );
+	font-size: 0.75rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var( --color-text-muted );
+	margin: 0 0 6px;
+}
+
+.lunar-section__title {
+	font-family: var( --font-display );
+	font-size: 1.6rem;
+	font-weight: 700;
+	margin: 0 0 20px;
+}
+
+/* ---------------------------------------------------------------------
+   "Jelajahi Game" tile grid
+   ------------------------------------------------------------------ */
+
+.lunar-game-tile-grid {
+	display: grid;
+	grid-template-columns: repeat( auto-fill, minmax( 96px, 1fr ) );
+	gap: 20px;
+}
+
+.lunar-game-tile {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	gap: 10px;
+	text-decoration: none;
+}
+
+.lunar-game-tile__icon {
+	width: 68px;
+	height: 68px;
+	border-radius: var( --radius-card );
+	background: var( --color-accent-secondary );
+	color: var( --color-surface );
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: var( --font-display );
+	font-weight: 700;
+	font-size: 0.75rem;
+	line-height: 1.15;
+	text-align: center;
+	padding: 4px;
+	overflow: hidden;
+}
+
+.lunar-game-tile__label {
+	font-size: 0.85rem;
+	font-weight: 500;
+	color: var( --color-text );
+}
+
+.lunar-game-tile:hover .lunar-game-tile__label {
+	color: var( --color-accent );
+	text-decoration: underline;
+}
+
+/* ---------------------------------------------------------------------
+   "Artikel Terbaru" card grid
+   ------------------------------------------------------------------ */
+
+.lunar-article-grid {
+	display: grid;
+	grid-template-columns: repeat( 3, 1fr );
+	gap: 20px;
+}
+
+.lunar-article-card {
+	background: var( --color-surface );
+	border: 1px solid var( --color-border );
+	border-radius: var( --radius-card );
+	padding: 16px 18px;
+}
+
+.lunar-article-card .lunar-badge {
+	margin-bottom: 10px;
+}
+
+.lunar-article-card__title {
+	font-family: var( --font-display );
+	font-size: 1.05rem;
+	font-weight: 600;
+	margin: 0 0 6px;
+}
+
+.lunar-article-card__title a {
+	color: var( --color-text );
+	text-decoration: none;
+}
+
+.lunar-article-card__title a:hover {
+	color: var( --color-accent );
+	text-decoration: underline;
+}
+
+.lunar-article-card__desc {
+	color: var( --color-text-muted );
+	font-size: 0.85rem;
+	margin: 0;
+}
+
+@media ( max-width: 640px ) {
+	.lunar-article-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.lunar-hero {
+		padding: 40px 20px 24px;
+	}
+
+	.lunar-section {
+		padding: 16px 20px 32px;
+	}
+}
