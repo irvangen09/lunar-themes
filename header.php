@@ -1,8 +1,9 @@
 <?php
 /**
- * Site header — logo, the single context-aware nav slot (static "Semua
- * Game" link by default, swapped for the current game's own menu when
- * inside a game context), and the search icon.
+ * Site header — logo, the single context-aware nav slot (a normal,
+ * location-based "Main Menu" by default, swapped for the current
+ * game's own menu when inside a game context), a mobile nav toggle,
+ * and the search icon.
  *
  * @package Lunar
  */
@@ -35,29 +36,46 @@ $lunar_secondary_menu_id = lunar_get_game_secondary_menu_id();
 			<?php bloginfo( 'name' ); ?>
 		</a>
 
-		<?php if ( $lunar_secondary_menu_id ) : ?>
+		<button type="button" class="lunar-nav-toggle" aria-expanded="false" aria-controls="lunar-nav-slot">
+			<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<line x1="3" y1="6" x2="21" y2="6"></line>
+				<line x1="3" y1="12" x2="21" y2="12"></line>
+				<line x1="3" y1="18" x2="21" y2="18"></line>
+			</svg>
+			<span class="lunar-visually-hidden"><?php esc_html_e( 'Menu', 'lunar' ); ?></span>
+		</button>
 
-			<?php
-			wp_nav_menu(
-				array(
-					'menu'            => $lunar_secondary_menu_id,
-					'container'       => 'nav',
-					'container_class' => 'lunar-site-nav',
-					'menu_class'      => 'lunar-site-nav__list',
-					'fallback_cb'     => false,
-				)
-			);
-			?>
+		<div id="lunar-nav-slot" class="lunar-nav-slot">
+			<?php if ( $lunar_secondary_menu_id ) : ?>
 
-		<?php else : ?>
+				<?php
+				wp_nav_menu(
+					array(
+						'menu'            => $lunar_secondary_menu_id,
+						'container'       => 'nav',
+						'container_class' => 'lunar-site-nav',
+						'menu_class'      => 'lunar-site-nav__list',
+						'fallback_cb'     => false,
+					)
+				);
+				?>
 
-			<nav class="lunar-site-nav">
-				<a href="<?php echo esc_url( home_url( '/' ) ); ?>">
-					<?php esc_html_e( 'Semua Game', 'lunar' ); ?>
-				</a>
-			</nav>
+			<?php else : ?>
 
-		<?php endif; ?>
+				<?php
+				wp_nav_menu(
+					array(
+						'theme_location'  => 'primary',
+						'container'       => 'nav',
+						'container_class' => 'lunar-site-nav',
+						'menu_class'      => 'lunar-site-nav__list',
+						'fallback_cb'     => false,
+					)
+				);
+				?>
+
+			<?php endif; ?>
+		</div>
 
 		<a class="lunar-search-icon" href="<?php echo esc_url( get_search_link() ); ?>" aria-label="<?php esc_attr_e( 'Search', 'lunar' ); ?>">
 			<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
