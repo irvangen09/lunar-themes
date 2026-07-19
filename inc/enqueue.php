@@ -97,5 +97,14 @@ function lunar_enqueue_assets(): void {
 			filemtime( get_template_directory() . '/assets/css/archive.css' )
 		);
 	}
+
+	if ( is_search() ) {
+		wp_enqueue_style(
+			'lunar-search',
+			get_template_directory_uri() . '/assets/css/search.css',
+			array( 'lunar-style' ),
+			filemtime( get_template_directory() . '/assets/css/search.css' )
+		);
+	}
 }
 add_action( 'wp_enqueue_scripts', 'lunar_enqueue_assets' );

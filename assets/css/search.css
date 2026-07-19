@@ -1,0 +1,131 @@
+/**
+ * Search Result styles — loaded only on is_search().
+ *
+ * Note: the underlying markup here is simpler than the original two-
+ * column mockup (single search form containing both the text input and
+ * the "Judul Game" checkboxes, submitted together with no JS) — this
+ * reflects the deliberate no-JS MVP scope for search.php. Styled here
+ * as a clean single search card rather than forcing the old two-panel
+ * layout onto markup it doesn't match.
+ */
+
+.lunar-search {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 32px 40px 56px;
+}
+
+/* ---------------------------------------------------------------------
+   Search hero (label, form, result count)
+   ------------------------------------------------------------------ */
+
+.lunar-search-hero {
+	margin-bottom: 24px;
+}
+
+.lunar-search-hero__label {
+	font-family: var( --font-mono );
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var( --color-text-muted );
+	margin: 0 0 12px;
+}
+
+.lunar-search-form {
+	background: var( --color-surface );
+	border: 1px solid var( --color-border );
+	border-radius: var( --radius-card );
+	padding: 18px 20px;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 14px 20px;
+}
+
+.lunar-search-form input[ type='text' ] {
+	flex: 1 1 260px;
+	border: 1px solid var( --color-border );
+	border-radius: var( --radius-inline );
+	background: var( --color-background );
+	padding: 10px 14px;
+	font-family: var( --font-body );
+	font-size: 1.05rem;
+	color: var( --color-text );
+}
+
+.lunar-search-form button {
+	font-family: var( --font-mono );
+	font-size: 0.85rem;
+	padding: 10px 20px;
+	border: none;
+	border-radius: var( --radius-inline );
+	background: var( --color-accent );
+	color: var( --color-surface );
+	cursor: pointer;
+}
+
+.lunar-search-form button:hover {
+	opacity: 0.9;
+}
+
+.lunar-search-result-count {
+	font-size: 0.85rem;
+	color: var( --color-text-muted );
+	margin: 10px 0 0;
+}
+
+/* ---------------------------------------------------------------------
+   Result list
+   ------------------------------------------------------------------ */
+
+.lunar-result-list {
+	display: flex;
+	flex-direction: column;
+	margin-top: 8px;
+}
+
+.lunar-result-item {
+	display: grid;
+	grid-template-columns: 90px 90px 1fr;
+	gap: 14px;
+	align-items: baseline;
+	padding: 12px 0;
+	border-bottom: 1px solid var( --color-border );
+}
+
+.lunar-result-item__game {
+	font-family: var( --font-mono );
+	font-size: 0.68rem;
+	color: var( --color-accent-secondary );
+	text-transform: uppercase;
+}
+
+.lunar-result-item__type {
+	font-family: var( --font-mono );
+	font-size: 0.68rem;
+	color: var( --color-text-muted );
+	text-transform: uppercase;
+}
+
+.lunar-result-item__title {
+	font-size: 0.98rem;
+	color: var( --color-text );
+	text-decoration: none;
+}
+
+.lunar-result-item__title:hover {
+	color: var( --color-accent );
+	text-decoration: underline;
+}
+
+@media ( max-width: 640px ) {
+	.lunar-search {
+		padding: 20px 20px 40px;
+	}
+
+	.lunar-result-item {
+		grid-template-columns: 1fr;
+		gap: 4px;
+	}
+}
