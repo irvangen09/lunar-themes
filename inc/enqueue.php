@@ -88,5 +88,14 @@ function lunar_enqueue_assets(): void {
 			filemtime( get_template_directory() . '/assets/css/homepage.css' )
 		);
 	}
+
+	if ( is_tax( 'game' ) ) {
+		wp_enqueue_style(
+			'lunar-archive',
+			get_template_directory_uri() . '/assets/css/archive.css',
+			array( 'lunar-style' ),
+			filemtime( get_template_directory() . '/assets/css/archive.css' )
+		);
+	}
 }
 add_action( 'wp_enqueue_scripts', 'lunar_enqueue_assets' );

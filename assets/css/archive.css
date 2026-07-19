@@ -1,0 +1,116 @@
+/**
+ * Archive per Game styles — loaded only on is_tax('game').
+ * Filter pill styling is shared (see layout.css); this file only
+ * covers the archive header and the multi-column article list.
+ */
+
+.lunar-archive {
+	max-width: 1100px;
+	margin: 0 auto;
+	padding: 16px 40px 56px;
+}
+
+/* ---------------------------------------------------------------------
+   Archive header (icon + name + description)
+   ------------------------------------------------------------------ */
+
+.lunar-archive__header {
+	display: flex;
+	align-items: center;
+	gap: 18px;
+	padding: 4px 0 20px;
+}
+
+.lunar-archive__icon {
+	width: 56px;
+	height: 56px;
+	flex-shrink: 0;
+	border-radius: var( --radius-card );
+	background: var( --color-accent-secondary );
+	color: var( --color-surface );
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: var( --font-display );
+	font-weight: 700;
+	font-size: 0.7rem;
+	line-height: 1.1;
+	text-align: center;
+	overflow: hidden;
+	padding: 4px;
+}
+
+.lunar-archive__header h1 {
+	font-family: var( --font-display );
+	font-size: 1.9rem;
+	font-weight: 700;
+	margin: 0;
+}
+
+.lunar-archive__header p {
+	margin: 4px 0 0;
+	color: var( --color-text-muted );
+	font-size: 0.9rem;
+}
+
+/* Filter bar sits right under the header, with its own bottom border */
+.lunar-filter-bar {
+	border-bottom: 1px solid var( --color-border );
+	padding-bottom: 20px;
+	margin-bottom: 24px;
+}
+
+/* ---------------------------------------------------------------------
+   Article list — dense multi-column layout
+   ------------------------------------------------------------------ */
+
+.lunar-archive-list {
+	columns: 3;
+	column-gap: 32px;
+}
+
+.lunar-archive-list-item {
+	break-inside: avoid;
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+	padding: 7px 0;
+	border-bottom: 1px solid var( --color-border );
+}
+
+.lunar-archive-list-item__badge {
+	font-family: var( --font-mono );
+	font-size: 0.62rem;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var( --color-accent-secondary );
+	flex-shrink: 0;
+	width: 52px;
+}
+
+.lunar-archive-list-item__title {
+	font-size: 0.92rem;
+	color: var( --color-text );
+	text-decoration: none;
+}
+
+.lunar-archive-list-item__title:hover {
+	color: var( --color-accent );
+	text-decoration: underline;
+}
+
+@media ( max-width: 782px ) {
+	.lunar-archive-list {
+		columns: 2;
+	}
+}
+
+@media ( max-width: 640px ) {
+	.lunar-archive {
+		padding: 12px 20px 40px;
+	}
+
+	.lunar-archive-list {
+		columns: 1;
+	}
+}
