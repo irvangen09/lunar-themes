@@ -70,6 +70,20 @@ function lunar_enqueue_assets(): void {
 		wp_get_theme()->get( 'Version' )
 	);
 
+	// The header nav (and its mobile toggle) appears on every page, so
+	// this script is not gated behind a template conditional like the
+	// page-specific stylesheets below.
+	wp_enqueue_script(
+		'lunar-navigation',
+		get_template_directory_uri() . '/assets/js/navigation.js',
+		array(),
+		filemtime( get_template_directory() . '/assets/js/navigation.js' ),
+		array(
+			'strategy'  => 'defer',
+			'in_footer' => true,
+		)
+	);
+
 	// Page-specific stylesheets — only loaded on the template that needs them.
 	if ( is_singular( 'wiki_artikel' ) ) {
 		wp_enqueue_style(
