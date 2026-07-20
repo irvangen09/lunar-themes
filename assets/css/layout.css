@@ -181,6 +181,10 @@
 	background: var( --color-surface-2 );
 }
 
+.lunar-nav-close {
+	display: none;
+}
+
 /* ---------------------------------------------------------------------
    Nav dropdown — applies to both the Main Menu and a per-game Secondary
    Menu, since they share the exact same markup (see header.php). Any
@@ -413,27 +417,67 @@
 }
 
 /* ---------------------------------------------------------------------
-   Header nav — mobile panel
-   The nav toggle appears, and whichever nav is active (Main Menu or a
-   per-game Secondary Menu — see header.php) collapses into a full-width
-   panel below the header bar, opened via ".is-open" on #lunar-nav-slot.
+   Header nav — mobile off-canvas panel
+   The nav toggle moves to the left of the logo, and whichever nav is
+   active (Main Menu or a per-game Secondary Menu — see header.php)
+   slides in from the left edge of the screen as a fixed panel with its
+   own scroll and a dimmed overlay behind it, both driven by ".is-open"
+   (see assets/js/navigation.js).
    ------------------------------------------------------------------ */
 
 @media ( max-width: 640px ) {
 
 	.lunar-nav-toggle {
 		display: flex;
+		order: -1;
+	}
+
+	.lunar-nav-close {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 32px;
+		height: 32px;
+		margin: 0 0 16px auto;
+		background: none;
+		border: 1px solid var( --color-border );
+		border-radius: 50%;
+		color: var( --color-text-muted );
+		cursor: pointer;
+	}
+
+	.lunar-nav-overlay {
+		display: none;
+		position: fixed;
+		inset: 0;
+		z-index: 90;
+		background: rgba( 43, 32, 21, 0.45 );
+	}
+
+	.lunar-nav-overlay.is-open {
+		display: block;
 	}
 
 	.lunar-nav-slot {
-		display: none;
-		order: 5;
-		flex-basis: 100%;
-		padding-top: 12px;
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 100;
+		width: min( 300px, 85vw );
+		height: 100vh;
+		overflow-y: auto;
+		padding: 16px;
+		background: var( --color-surface );
+		border-right: 1px solid var( --color-border );
+		visibility: hidden;
+		transform: translateX( -100% );
+		transition: transform 0.25s ease, visibility 0s linear 0.25s;
 	}
 
 	.lunar-nav-slot.is-open {
-		display: block;
+		visibility: visible;
+		transform: translateX( 0 );
+		transition: transform 0.25s ease, visibility 0s linear 0s;
 	}
 
 	.lunar-site-nav {
@@ -448,4 +492,13 @@
 	.lunar-site-nav__list .sub-menu {
 		padding-left: 16px;
 	}
+}
+
+/* ---------------------------------------------------------------------
+   Locks background scrolling while the mobile nav panel is open.
+   Toggled on <body> by assets/js/navigation.js.
+   ------------------------------------------------------------------ */
+
+.lunar-no-scroll {
+	overflow: hidden;
 }

@@ -46,6 +46,13 @@ $lunar_secondary_menu_id = lunar_get_game_secondary_menu_id();
 		</button>
 
 		<div id="lunar-nav-slot" class="lunar-nav-slot">
+			<button type="button" class="lunar-nav-close" aria-label="<?php esc_attr_e( 'Close menu', 'lunar' ); ?>">
+				<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<line x1="6" y1="6" x2="18" y2="18"></line>
+					<line x1="18" y1="6" x2="6" y2="18"></line>
+				</svg>
+			</button>
+
 			<?php if ( $lunar_secondary_menu_id ) : ?>
 
 				<?php
@@ -84,3 +91,5 @@ $lunar_secondary_menu_id = lunar_get_game_secondary_menu_id();
 			</svg>
 		</a>
 	</header>
+
+	<div id="lunar-nav-overlay" class="lunar-nav-overlay"></div>
