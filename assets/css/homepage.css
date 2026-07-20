@@ -3,31 +3,6 @@
  */
 
 /* ---------------------------------------------------------------------
-   Hero
-   ------------------------------------------------------------------ */
-
-.lunar-hero {
-	max-width: 1000px;
-	margin: 0 auto;
-	padding: 56px 40px 32px;
-	text-align: center;
-}
-
-.lunar-hero__title {
-	font-family: var( --font-display );
-	font-size: 2.4rem;
-	font-weight: 700;
-	margin: 0 0 12px;
-}
-
-.lunar-hero__description {
-	color: var( --color-text-muted );
-	font-size: 1.05rem;
-	max-width: 560px;
-	margin: 0 auto;
-}
-
-/* ---------------------------------------------------------------------
    Section shell (shared by "Jelajahi Game" and "Artikel Terbaru")
    ------------------------------------------------------------------ */
 
@@ -90,6 +65,17 @@
 	overflow: hidden;
 }
 
+.lunar-game-tile__icon--image {
+	background: var( --color-surface-2 );
+	padding: 0;
+}
+
+.lunar-game-tile__icon--image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
 .lunar-game-tile__label {
 	font-size: 0.85rem;
 	font-weight: 500;
@@ -145,13 +131,39 @@
 	margin: 0;
 }
 
+/* ---------------------------------------------------------------------
+   "Artikel Terbaru" — Previous/Next
+   ------------------------------------------------------------------ */
+
+.lunar-article-nav {
+	display: flex;
+	margin-top: 24px;
+}
+
+.lunar-article-nav__next {
+	margin-left: auto;
+}
+
+.lunar-article-nav__prev,
+.lunar-article-nav__next {
+	font-family: var( --font-mono );
+	font-size: 0.85rem;
+	padding: 8px 16px;
+	border: 1px solid var( --color-border );
+	border-radius: var( --radius-inline );
+	color: var( --color-text-muted );
+	text-decoration: none;
+}
+
+.lunar-article-nav__prev:hover,
+.lunar-article-nav__next:hover {
+	color: var( --color-accent );
+	border-color: var( --color-accent );
+}
+
 @media ( max-width: 640px ) {
 	.lunar-article-grid {
 		grid-template-columns: 1fr;
-	}
-
-	.lunar-hero {
-		padding: 40px 20px 24px;
 	}
 
 	.lunar-section {

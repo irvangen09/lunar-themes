@@ -1,9 +1,9 @@
 <?php
 /**
  * Homepage template. Used automatically by WordPress when a static Page
- * is set as the front page (Settings > Reading). The hero title and
- * description come from that Page's own title and Excerpt — editable
- * by the site owner without touching this file.
+ * is set as the front page (Settings > Reading). Shows the Game Tiles
+ * grid and the latest Wiki Artikel entries — no page title or hero
+ * text, by design.
  *
  * @package Lunar
  */
@@ -20,14 +20,6 @@ while ( have_posts() ) :
 
 	<main id="main-content">
 
-		<section class="lunar-hero">
-			<h1 class="lunar-hero__title"><?php the_title(); ?></h1>
-
-			<?php if ( has_excerpt() ) : ?>
-				<p class="lunar-hero__description"><?php echo esc_html( get_the_excerpt() ); ?></p>
-			<?php endif; ?>
-		</section>
-
 		<?php
 		$lunar_game_terms = lunar_get_game_terms();
 
@@ -38,11 +30,20 @@ while ( have_posts() ) :
 				<h2 class="lunar-section__title"><?php esc_html_e( 'Pilih judul game', 'lunar' ); ?></h2>
 
 				<div class="lunar-game-tile-grid">
-					<?php foreach ( $lunar_game_terms as $lunar_game_term ) : ?>
-						<a class="lunar-game-tile" href="<?php echo esc_url( get_term_link( $lunar_game_term ) ); ?>">
-							<span class="lunar-game-tile__icon" aria-hidden="true">
-								<?php echo esc_html( $lunar_game_term->name ); ?>
-							</span>
+					<?php
+					foreach ( $lunar_game_terms as $lunar_game_term ) :
+						$lunar_tile_image_id = lunar_get_game_tile_image_id( $lunar_game_term );
+						?>
+						<a class="lunar-game-tile" href="<?php echo esc_url( lunar_get_game_tile_url( $lunar_game_term ) ); ?>">
+							<?php if ( $lunar_tile_image_id > 0 ) : ?>
+								<span class="lunar-game-tile__icon lunar-game-tile__icon--image" aria-hidden="true">
+									<?php echo wp_get_attachment_image( $lunar_tile_image_id, 'thumbnail', false, array( 'loading' => 'lazy' ) ); ?>
+								</span>
+							<?php else : ?>
+								<span class="lunar-game-tile__icon" aria-hidden="true">
+									<?php echo esc_html( $lunar_game_term->name ); ?>
+								</span>
+							<?php endif; ?>
 							<span class="lunar-game-tile__label"><?php echo esc_html( $lunar_game_term->name ); ?></span>
 						</a>
 					<?php endforeach; ?>
@@ -51,13 +52,25 @@ while ( have_posts() ) :
 			<?php
 		endif;
 
+		// On the static front page, WordPress stores a secondary loop's
+		// page number under the "page" query var, not "paged" (that one
+		// is reserved for the main blog/archive query). Checking both
+		// keeps this robust if the front page setting ever changes.
+		$lunar_articles_paged = (int) get_query_var( 'page' );
+
+		if ( ! $lunar_articles_paged ) {
+			$lunar_articles_paged = (int) get_query_var( 'paged' );
+		}
+
+		$lunar_articles_paged = max( 1, $lunar_articles_paged );
+
 		$lunar_latest_articles = new WP_Query(
 			array(
 				'post_type'      => 'wiki_artikel',
 				'posts_per_page' => 3,
+				'paged'          => $lunar_articles_paged,
 				'orderby'        => 'date',
 				'order'          => 'DESC',
-				'no_found_rows'  => true,
 			)
 		);
 
@@ -94,6 +107,22 @@ while ( have_posts() ) :
 					wp_reset_postdata();
 					?>
 				</div>
+
+				<?php if ( $lunar_latest_articles->max_num_pages > 1 ) : ?>
+					<nav class="lunar-article-nav" aria-label="<?php esc_attr_e( 'Navigasi artikel terbaru', 'lunar' ); ?>">
+						<?php if ( $lunar_articles_paged > 1 ) : ?>
+							<a class="lunar-article-nav__prev" href="<?php echo esc_url( get_pagenum_link( $lunar_articles_paged - 1 ) ); ?>">
+								&lsaquo; <?php esc_html_e( 'Sebelumnya', 'lunar' ); ?>
+							</a>
+						<?php endif; ?>
+
+						<?php if ( $lunar_articles_paged < $lunar_latest_articles->max_num_pages ) : ?>
+							<a class="lunar-article-nav__next" href="<?php echo esc_url( get_pagenum_link( $lunar_articles_paged + 1 ) ); ?>">
+								<?php esc_html_e( 'Berikutnya', 'lunar' ); ?> &rsaquo;
+							</a>
+						<?php endif; ?>
+					</nav>
+				<?php endif; ?>
 			</section>
 			<?php
 		endif;
