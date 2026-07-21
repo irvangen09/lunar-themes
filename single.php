@@ -10,6 +10,12 @@
  * Infobox simply gets no sidebar markup at all, falling back to a
  * single full-width column).
  *
+ * The sidebar markup is placed BEFORE the content on purpose: on
+ * mobile the grid collapses to a plain block layout, so source order
+ * is what decides visual order there, and Infobox is meant to appear
+ * near the top. On desktop, single.css assigns explicit grid columns
+ * so the visual left/right position doesn't depend on this order.
+ *
  * @package Lunar
  */
 
@@ -51,15 +57,15 @@ while ( have_posts() ) :
 			<?php endif; ?>
 
 			<div class="lunar-article__layout">
-				<div class="lunar-article__content">
-					<?php echo $lunar_article_layout['content_html']; ?>
-				</div>
-
 				<?php if ( $lunar_article_layout['has_infobox'] ) : ?>
 					<aside class="lunar-article__sidebar">
 						<?php echo $lunar_article_layout['infobox_html']; ?>
 					</aside>
 				<?php endif; ?>
+
+				<div class="lunar-article__content">
+					<?php echo $lunar_article_layout['content_html']; ?>
+				</div>
 			</div>
 
 			<footer class="lunar-article__meta">

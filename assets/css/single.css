@@ -3,8 +3,9 @@
  *
  * Infobox's own "card" appearance (background, border, radius, field
  * grid) is already styled by the block itself in the companion plugin.
- * This file only adds the float + sticky POSITIONING on top of it —
- * the block's own stylesheet explicitly leaves that to the theme.
+ * This file only arranges it into a two-column grid alongside the main
+ * content and handles its sticky scroll behavior — the block's own
+ * stylesheet explicitly leaves that to the theme.
  */
 
 .lunar-article {
@@ -14,24 +15,62 @@
 }
 
 /* ---------------------------------------------------------------------
-   Infobox positioning (the block itself only sets max-width: 320px and
-   its own card appearance — float/sticky is layout, so it belongs here)
+   Two-column layout (main content + Infobox sidebar)
+
+   The sidebar is a real sibling element (see single.php), not content
+   floated within the text column — so its height and the content
+   column's height are completely independent of each other. Neither
+   one can create empty space or overlap in the other.
+
+   Source order in single.php is sidebar-then-content (so mobile, which
+   collapses this to a plain block layout, shows Infobox near the top).
+   grid-column below re-orders them visually for desktop, independent
+   of that source order.
    ------------------------------------------------------------------ */
 
-.lunar-infobox {
-	float: right;
-	margin: 0 0 24px 32px;
+.lunar-article__layout {
+	display: grid;
+	grid-template-columns: 1fr 320px;
+	gap: 40px;
+	/* align-items intentionally left at its default (stretch): the
+	   sidebar's box stretches to match the content column's height,
+	   which is what makes the sticky rule below stop by itself once it
+	   reaches the end of the content — no scroll cap, no JS needed. */
+}
+
+.lunar-article__content {
+	grid-column: 1;
+	grid-row: 1;
+
+	/* Without this, a grid item's default minimum width is based on its
+	   content's intrinsic size — so a block with a wide, non-wrapping
+	   inner row (e.g. Tabs' tab strip) can force this column, the grid,
+	   and the whole page wider instead of scrolling internally the way
+	   that block's own CSS already intends. */
+	min-width: 0;
+}
+
+.lunar-article__sidebar {
+	grid-column: 2;
+	grid-row: 1;
+
 	position: sticky;
 	top: 24px;
 }
 
 @media ( max-width: 640px ) {
+	.lunar-article__layout {
+		display: block;
+	}
+
+	.lunar-article__sidebar {
+		position: static;
+		margin-bottom: 24px;
+	}
+
 	.lunar-infobox {
-		float: none;
 		width: 100%;
 		max-width: none;
-		margin: 0 0 24px;
-		position: static;
 	}
 }
 
@@ -59,31 +98,11 @@
    Article body
    ------------------------------------------------------------------ */
 
-/*
- * Fix: block-level content (tables, images, grid-based blocks like
- * Gallery/Table) does not naturally shrink around a float the way text
- * does — without this, it renders full width and visually overlaps the
- * floated Infobox instead of flowing beside it. Forcing each top-level
- * block to establish its own Block Formatting Context (via overflow)
- * makes the browser correctly narrow it around the float instead.
- *
- * Excluded: .lunar-infobox itself (no need, and it's the float source),
- * and alignwide/alignfull blocks (those intentionally bleed past the
- * container via negative margins — clipping would cut them off).
- */
-.lunar-article__content > *:not( .lunar-infobox ):not( .alignwide ):not( .alignfull ) {
-	overflow: hidden;
-}
-
 .lunar-article__content p {
 	margin: 0 0 20px;
 }
 
 .lunar-article__content h2 {
-	/* Always spans full width, even if the Infobox float is still active
-	   at this point in the content (e.g. a short intro paragraph) —
-	   section headings should never get squeezed narrow next to it. */
-	clear: both;
 	font-family: var( --font-display );
 	font-size: 1.5rem;
 	font-weight: 700;
@@ -97,7 +116,6 @@
    ------------------------------------------------------------------ */
 
 .lunar-article__meta {
-	clear: both;
 	margin-top: 40px;
 	padding-top: 16px;
 	border-top: 1px solid var( --color-border );
