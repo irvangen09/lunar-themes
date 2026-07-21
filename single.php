@@ -2,10 +2,13 @@
 /**
  * Single Wiki Artikel template.
  *
- * Renders one column of content only — the Infobox block that authors
- * place at the start of the article is what visually becomes a right
- * column on desktop, purely through CSS (float + sticky), not through
- * any grid/column markup here. See the styling stage for that CSS.
+ * Infobox is split out of the content by lunar_get_article_layout()
+ * and rendered as its own sidebar element, sitting next to the main
+ * content in a two-column grid. Positioning, spacing, and sticky
+ * behavior for that grid live entirely in single.css — this template
+ * only decides *whether* the sidebar exists (an article without an
+ * Infobox simply gets no sidebar markup at all, falling back to a
+ * single full-width column).
  *
  * @package Lunar
  */
@@ -28,6 +31,8 @@ while ( have_posts() ) :
 	if ( ! empty( trim( (string) $lunar_update_notes ) ) ) {
 		$lunar_update_notes_list = array_filter( array_map( 'trim', explode( "\n", $lunar_update_notes ) ) );
 	}
+
+	$lunar_article_layout = lunar_get_article_layout();
 	?>
 
 	<main id="main-content" class="lunar-article">
@@ -45,8 +50,16 @@ while ( have_posts() ) :
 				<p class="lunar-article__tagline"><?php echo esc_html( get_the_excerpt() ); ?></p>
 			<?php endif; ?>
 
-			<div class="lunar-article__content">
-				<?php the_content(); ?>
+			<div class="lunar-article__layout">
+				<div class="lunar-article__content">
+					<?php echo $lunar_article_layout['content_html']; ?>
+				</div>
+
+				<?php if ( $lunar_article_layout['has_infobox'] ) : ?>
+					<aside class="lunar-article__sidebar">
+						<?php echo $lunar_article_layout['infobox_html']; ?>
+					</aside>
+				<?php endif; ?>
 			</div>
 
 			<footer class="lunar-article__meta">
