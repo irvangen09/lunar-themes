@@ -75,10 +75,21 @@ lunar_breadcrumb();
 
 		<div class="lunar-archive-list">
 			<?php
+			$lunar_is_franchise_level = $lunar_term instanceof WP_Term && 0 === (int) $lunar_term->parent;
+
 			while ( have_posts() ) :
 				the_post();
 
 				$lunar_tipe_konten_terms = get_the_terms( get_the_ID(), 'tipe_konten' );
+				$lunar_article_game_term = null;
+
+				if ( $lunar_is_franchise_level ) {
+					$lunar_article_game_terms = get_the_terms( get_the_ID(), 'game' );
+
+					if ( is_array( $lunar_article_game_terms ) && ! empty( $lunar_article_game_terms ) ) {
+						$lunar_article_game_term = $lunar_article_game_terms[0];
+					}
+				}
 				?>
 				<div class="lunar-archive-list-item">
 					<?php if ( is_array( $lunar_tipe_konten_terms ) && ! empty( $lunar_tipe_konten_terms ) ) : ?>
@@ -86,7 +97,12 @@ lunar_breadcrumb();
 							<?php echo esc_html( $lunar_tipe_konten_terms[0]->name ); ?>
 						</span>
 					<?php endif; ?>
-					<a class="lunar-archive-list-item__title" href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+					<a class="lunar-archive-list-item__title" href="<?php the_permalink(); ?>">
+						<?php the_title(); ?>
+						<?php if ( $lunar_article_game_term ) : ?>
+							<span class="lunar-archive-list-item__game">(<?php echo esc_html( $lunar_article_game_term->name ); ?>)</span>
+						<?php endif; ?>
+					</a>
 				</div>
 				<?php
 			endwhile;

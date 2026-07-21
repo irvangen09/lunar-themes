@@ -94,6 +94,11 @@
 	text-decoration: none;
 }
 
+.lunar-archive-list-item__game {
+	color: var( --color-text-muted );
+	font-size: 0.8em;
+}
+
 .lunar-archive-list-item__title:hover {
 	color: var( --color-accent );
 	text-decoration: underline;
