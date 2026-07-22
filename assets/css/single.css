@@ -12,6 +12,18 @@
 	max-width: 1000px;
 	margin: 0 auto;
 	padding: 24px 40px 64px;
+
+	/* .lunar-article is a flex item of .lunar-site-wrapper (layout.css,
+	   the sticky-footer shell used on every template — flex-direction:
+	   column, so width is the CROSS axis). align-items: stretch is
+	   supposed to size cross-axis children to the container's width
+	   automatically, but once deeply nested non-wrapping content exists
+	   (e.g. Tabs' tab strip), the browser lets that content's intrinsic
+	   minimum width win instead — forcing this element, and the whole
+	   page, wider than the viewport. Setting width explicitly (instead
+	   of leaving it to auto-stretch) is what actually stops that. */
+	width: 100%;
+	min-width: 0;
 }
 
 /* ---------------------------------------------------------------------
