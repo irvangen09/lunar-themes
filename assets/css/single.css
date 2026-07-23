@@ -114,13 +114,93 @@
 	margin: 0 0 20px;
 }
 
-.lunar-article__content h2 {
+/* ---------------------------------------------------------------------
+   Headings (H2–H6)
+
+   No automatic separator line — a heading is told apart from body text
+   by size, weight, and spacing alone. Top margin tightens as the level
+   gets deeper (H2 opens a new section and needs more breathing room;
+   H6 is a minor sub-point and sits closer to what precedes it). Bottom
+   margin stays small and consistent so every heading reads as
+   attached to the content it introduces, not floating between two
+   things.
+
+   Excluded: .lunar-accordion-item__title and .lunar-timeline-item__title
+   — both are headings structurally (for accessibility/document
+   outline), but they're a block's own internal title, not an authored
+   section heading, and LunarCore already gives each its complete own
+   styling. Without this exclusion, this rule's selector (class + type)
+   outranks the plugin's own rule (class only) by CSS specificity and
+   silently overrides it.
+   ------------------------------------------------------------------ */
+
+.lunar-article__content h2:not( .lunar-accordion-item__title ):not( .lunar-timeline-item__title ),
+.lunar-article__content h3:not( .lunar-accordion-item__title ):not( .lunar-timeline-item__title ),
+.lunar-article__content h4:not( .lunar-accordion-item__title ):not( .lunar-timeline-item__title ),
+.lunar-article__content h5:not( .lunar-accordion-item__title ):not( .lunar-timeline-item__title ),
+.lunar-article__content h6:not( .lunar-accordion-item__title ):not( .lunar-timeline-item__title ) {
 	font-family: var( --font-display );
-	font-size: 1.5rem;
 	font-weight: 700;
-	margin: 36px 0 12px;
-	padding-top: 8px;
-	border-top: 1px solid var( --color-border );
+	line-height: 1.3;
+}
+
+.lunar-article__content h2:not( .lunar-accordion-item__title ):not( .lunar-timeline-item__title ) {
+	font-size: 1.5rem;
+	margin: 40px 0 8px;
+}
+
+.lunar-article__content h3:not( .lunar-accordion-item__title ):not( .lunar-timeline-item__title ) {
+	font-size: 1.25rem;
+	margin: 32px 0 8px;
+}
+
+.lunar-article__content h4:not( .lunar-accordion-item__title ):not( .lunar-timeline-item__title ) {
+	font-size: 1.1rem;
+	margin: 28px 0 6px;
+}
+
+.lunar-article__content h5:not( .lunar-accordion-item__title ):not( .lunar-timeline-item__title ) {
+	font-size: 1rem;
+	margin: 24px 0 6px;
+}
+
+.lunar-article__content h6:not( .lunar-accordion-item__title ):not( .lunar-timeline-item__title ) {
+	font-size: 0.9rem;
+	margin: 20px 0 6px;
+}
+
+/* No awkward gap if a heading happens to be the very first thing in
+   the content column (e.g. an article with no intro paragraph). */
+.lunar-article__content > h2:first-child,
+.lunar-article__content > h3:first-child,
+.lunar-article__content > h4:first-child,
+.lunar-article__content > h5:first-child,
+.lunar-article__content > h6:first-child {
+	margin-top: 0;
+}
+
+/* ---------------------------------------------------------------------
+   Manual separator (WordPress core Separator block)
+
+   Core already provides the block's structure and both style variants
+   (default = short, centered; is-style-wide = full width) — this only
+   re-colors and re-spaces it to match the site's palette instead of
+   the generic currentColor/opacity core ships with.
+   ------------------------------------------------------------------ */
+
+.lunar-article__content .wp-block-separator {
+	border: none;
+	border-bottom: 1px solid var( --color-border );
+	opacity: 1;
+	margin: 32px auto;
+}
+
+.lunar-article__content .wp-block-separator:not( .is-style-wide ) {
+	width: 100px;
+}
+
+.lunar-article__content .wp-block-separator.is-style-wide {
+	width: 100%;
 }
 
 /* ---------------------------------------------------------------------
