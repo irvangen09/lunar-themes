@@ -68,6 +68,8 @@ while ( have_posts() ) :
 				</div>
 			</div>
 
+			<?php lunar_render_author_box(); ?>
+
 			<footer class="lunar-article__meta">
 				<p class="lunar-article__updated">
 					<?php
