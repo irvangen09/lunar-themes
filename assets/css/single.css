@@ -198,11 +198,11 @@
    not scoped to direct children only: a heading (or paragraph, list,
    etc.) that opens a block's inner content shouldn't need extra top
    space just because it's technically "inside" something. */
-.lunar-article__content h2:first-child,
-.lunar-article__content h3:first-child,
-.lunar-article__content h4:first-child,
-.lunar-article__content h5:first-child,
-.lunar-article__content h6:first-child,
+.lunar-article__content h2:not( .lunar-accordion-item__title ):not( .lunar-timeline-item__title ):first-child,
+.lunar-article__content h3:not( .lunar-accordion-item__title ):not( .lunar-timeline-item__title ):first-child,
+.lunar-article__content h4:not( .lunar-accordion-item__title ):not( .lunar-timeline-item__title ):first-child,
+.lunar-article__content h5:not( .lunar-accordion-item__title ):not( .lunar-timeline-item__title ):first-child,
+.lunar-article__content h6:not( .lunar-accordion-item__title ):not( .lunar-timeline-item__title ):first-child,
 .lunar-article__content p:first-child,
 .lunar-article__content ul:first-child,
 .lunar-article__content ol:first-child,
