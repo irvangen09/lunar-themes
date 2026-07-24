@@ -42,8 +42,16 @@
 
 .lunar-article__layout {
 	display: grid;
-	grid-template-columns: 1fr 320px;
+	grid-template-columns: 1fr;
 	gap: 40px;
+}
+
+/* Only reserve the sidebar column when a sidebar element actually
+   exists — grid-template-columns is otherwise a fixed definition, so
+   an article with no Infobox block would keep this space blank
+   instead of the content simply using the full width. */
+.lunar-article__layout:has( .lunar-article__sidebar ) {
+	grid-template-columns: 1fr 320px;
 	/* align-items intentionally left at its default (stretch): the
 	   sidebar's box stretches to match the content column's height,
 	   which is what makes the sticky rule below stop by itself once it
@@ -110,8 +118,23 @@
    Article body
    ------------------------------------------------------------------ */
 
-.lunar-article__content p {
-	margin: 0 0 20px;
+/* ---------------------------------------------------------------------
+   Core content elements (paragraph, list, quote, native image/table)
+
+   Same rhythm as headings: symmetric top/bottom margin, and because
+   adjacent margins collapse to whichever is larger (not summed), this
+   is what actually keeps spacing consistent regardless of which pair
+   of elements happens to sit next to each other — including next to
+   LunarCore blocks, without touching a single LunarCore file.
+   ------------------------------------------------------------------ */
+
+.lunar-article__content p,
+.lunar-article__content ul,
+.lunar-article__content ol,
+.lunar-article__content blockquote,
+.lunar-article__content figure.wp-block-image,
+.lunar-article__content figure.wp-block-table {
+	margin: 20px 0;
 }
 
 /* ---------------------------------------------------------------------
@@ -169,13 +192,23 @@
 	margin: 20px 0 6px;
 }
 
-/* No awkward gap if a heading happens to be the very first thing in
-   the content column (e.g. an article with no intro paragraph). */
-.lunar-article__content > h2:first-child,
-.lunar-article__content > h3:first-child,
-.lunar-article__content > h4:first-child,
-.lunar-article__content > h5:first-child,
-.lunar-article__content > h6:first-child {
+/* No awkward gap if one of these happens to be the very first thing
+   inside ITS OWN container — the article content column itself, or
+   any nested container such as an Accordion item's body. Deliberately
+   not scoped to direct children only: a heading (or paragraph, list,
+   etc.) that opens a block's inner content shouldn't need extra top
+   space just because it's technically "inside" something. */
+.lunar-article__content h2:first-child,
+.lunar-article__content h3:first-child,
+.lunar-article__content h4:first-child,
+.lunar-article__content h5:first-child,
+.lunar-article__content h6:first-child,
+.lunar-article__content p:first-child,
+.lunar-article__content ul:first-child,
+.lunar-article__content ol:first-child,
+.lunar-article__content blockquote:first-child,
+.lunar-article__content figure.wp-block-image:first-child,
+.lunar-article__content figure.wp-block-table:first-child {
 	margin-top: 0;
 }
 
