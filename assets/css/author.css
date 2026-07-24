@@ -1,0 +1,103 @@
+/**
+ * Author Box styles — loaded on is_singular('wiki_artikel') (end of
+ * article) and is_author() (Author Archive header). Kept in its own
+ * file rather than folded into single.css or archive.css, since it's
+ * the one component genuinely needed by both contexts.
+ */
+
+.lunar-author-box {
+	display: flex;
+	gap: 20px;
+	align-items: flex-start;
+	margin-top: 40px;
+	padding: 20px;
+	background: var( --color-surface );
+	border: 1px solid var( --color-border );
+	border-radius: var( --radius-card );
+}
+
+/* On the Author Archive, the box IS the header — no extra top margin
+   needed above it (unlike on a single article, where it needs to be
+   set apart from the content that precedes it). */
+.lunar-archive__header--author .lunar-author-box {
+	margin-top: 0;
+}
+
+.lunar-author-box__avatar {
+	flex-shrink: 0;
+	border-radius: var( --radius-card );
+}
+
+.lunar-author-box__body {
+	min-width: 0;
+}
+
+.lunar-author-box__name {
+	margin: 0 0 4px;
+	font-family: var( --font-display );
+	font-size: 1.1rem;
+	font-weight: 700;
+}
+
+.lunar-author-box__name a {
+	color: var( --color-text );
+}
+
+.lunar-author-box__role {
+	margin-left: 8px;
+	font-family: var( --font-mono );
+	font-size: 0.7rem;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var( --color-accent-secondary );
+	background: var( --color-surface-2 );
+	border: 1px solid var( --color-border );
+	border-radius: var( --radius-inline );
+	padding: 3px 8px;
+	vertical-align: middle;
+}
+
+.lunar-author-box__bio {
+	margin: 0 0 12px;
+	color: var( --color-text-muted );
+	font-size: 0.92rem;
+	line-height: 1.6;
+}
+
+.lunar-author-box__social {
+	display: flex;
+	gap: 10px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.lunar-author-box__social-link {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	border: 1px solid var( --color-border );
+	color: var( --color-text-muted );
+	text-decoration: none;
+	font-size: 16px;
+}
+
+.lunar-author-box__social-link:hover {
+	color: var( --color-accent );
+	border-color: var( --color-accent );
+}
+
+@media ( max-width: 640px ) {
+	.lunar-author-box {
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+	}
+
+	.lunar-author-box__social {
+		justify-content: center;
+	}
+}
