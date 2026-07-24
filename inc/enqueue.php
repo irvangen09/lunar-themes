@@ -94,6 +94,15 @@ function lunar_enqueue_assets(): void {
 		);
 	}
 
+	if ( is_singular( 'wiki_artikel' ) || is_author() ) {
+		wp_enqueue_style(
+			'lunar-author',
+			get_template_directory_uri() . '/assets/css/author.css',
+			array( 'lunar-style' ),
+			filemtime( get_template_directory() . '/assets/css/author.css' )
+		);
+	}
+
 	if ( is_front_page() ) {
 		wp_enqueue_style(
 			'lunar-homepage',
@@ -103,7 +112,7 @@ function lunar_enqueue_assets(): void {
 		);
 	}
 
-	if ( is_tax( 'game' ) ) {
+	if ( is_tax( 'game' ) || is_author() ) {
 		wp_enqueue_style(
 			'lunar-archive',
 			get_template_directory_uri() . '/assets/css/archive.css',
