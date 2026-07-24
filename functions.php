@@ -23,3 +23,4 @@ require get_template_directory() . '/inc/breadcrumb.php';
 require get_template_directory() . '/inc/search-filters.php';
 require get_template_directory() . '/inc/infobox-layout.php';
 require get_template_directory() . '/inc/author-box.php';
+require get_template_directory() . '/inc/author-query.php';
