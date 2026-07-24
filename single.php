@@ -52,6 +52,8 @@ while ( have_posts() ) :
 
 			<h1 class="lunar-article__title"><?php the_title(); ?></h1>
 
+			<?php lunar_render_byline(); ?>
+
 			<?php if ( has_excerpt() ) : ?>
 				<p class="lunar-article__tagline"><?php echo esc_html( get_the_excerpt() ); ?></p>
 			<?php endif; ?>
