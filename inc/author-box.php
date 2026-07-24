@@ -1,19 +1,53 @@
 <?php
 /**
- * Renders the Author Box: avatar, name (linked to their archive),
- * role, bio, and social links.
+ * Renders author-related bits shared across templates:
  *
- * Used in two places: at the end of a single article, and as the
- * header of the Author Archive template — same markup in both, since
- * an author archive page is, in effect, entirely about that one
- * author, so the fuller version reads better there too rather than a
- * separate stripped-down header.
+ * - lunar_render_byline(): compact avatar + name + published date,
+ *   shown right under the article title.
+ * - lunar_render_author_box(): fuller card (avatar, name, role, bio,
+ *   social links), shown at the end of a single article and reused as
+ *   the Author Archive's header.
  *
  * @package Lunar
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Prevent direct access.
+}
+
+/**
+ * Outputs the byline: small avatar, author name (linked to their
+ * archive), and the post's published date.
+ *
+ * @param int $user_id User ID. Defaults to the current post's author
+ *                      when called from inside the Loop.
+ */
+function lunar_render_byline( int $user_id = 0 ): void {
+	if ( 0 === $user_id ) {
+		$user_id = (int) get_the_author_meta( 'ID' );
+	}
+
+	if ( 0 === $user_id ) {
+		return;
+	}
+
+	$display_name = get_the_author_meta( 'display_name', $user_id );
+	$archive_url  = get_author_posts_url( $user_id );
+	?>
+	<div class="lunar-article__byline">
+		<?php echo get_avatar( $user_id, 32, '', '', array( 'class' => 'lunar-article__byline-avatar' ) ); ?>
+		<span class="lunar-article__byline-text">
+			<?php
+			printf(
+				/* translators: 1: author name link, 2: published date */
+				esc_html__( 'Oleh %1$s — %2$s', 'lunar' ),
+				'<a href="' . esc_url( $archive_url ) . '">' . esc_html( $display_name ) . '</a>',
+				esc_html( get_the_date() )
+			);
+			?>
+		</span>
+	</div>
+	<?php
 }
 
 /**
