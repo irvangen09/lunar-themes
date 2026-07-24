@@ -106,6 +106,24 @@
 	margin: 14px 0 8px;
 }
 
+.lunar-article__byline {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0 0 16px;
+	font-size: 0.85rem;
+	color: var( --color-text-muted );
+}
+
+.lunar-article__byline-avatar {
+	border-radius: 50%;
+}
+
+.lunar-article__byline-text a {
+	color: var( --color-text );
+	font-weight: 600;
+}
+
 .lunar-article__tagline {
 	font-family: var( --font-body );
 	font-style: italic;
