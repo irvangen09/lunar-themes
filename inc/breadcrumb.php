@@ -1,9 +1,8 @@
 <?php
 /**
- * Breadcrumb helper. Currently only handles the single Wiki Artikel
- * context (Beranda > Franchise > Judul Spesifik > Tipe Konten > Judul
- * Artikel). Other contexts (Archive per Game, Search) will extend this
- * same function when those templates are built.
+ * Breadcrumb helper. Handles the single Wiki Artikel, Game archive,
+ * and Author archive contexts. Other contexts (Search) will extend
+ * this same function when that template is built.
  *
  * @package Lunar
  */
@@ -20,6 +19,8 @@ function lunar_breadcrumb(): void {
 		$crumbs = lunar_get_breadcrumb_for_wiki_artikel();
 	} elseif ( is_tax( 'game' ) ) {
 		$crumbs = lunar_get_breadcrumb_for_game_archive();
+	} elseif ( is_author() ) {
+		$crumbs = lunar_get_breadcrumb_for_author_archive();
 	} else {
 		return;
 	}
@@ -154,6 +155,31 @@ function lunar_get_breadcrumb_for_game_archive(): array {
 		'label' => $term->name,
 		'url'   => '',
 	);
+
+	return $crumbs;
+}
+
+/**
+ * Builds the breadcrumb trail for an Author archive: Beranda > Nama Penulis.
+ *
+ * @return array<int, array{label: string, url: string}>
+ */
+function lunar_get_breadcrumb_for_author_archive(): array {
+	$crumbs = array(
+		array(
+			'label' => __( 'Beranda', 'lunar' ),
+			'url'   => home_url( '/' ),
+		),
+	);
+
+	$author = get_queried_object();
+
+	if ( $author instanceof WP_User ) {
+		$crumbs[] = array(
+			'label' => $author->display_name,
+			'url'   => '',
+		);
+	}
 
 	return $crumbs;
 }
