@@ -84,7 +84,7 @@ $lunar_secondary_menu_id = lunar_get_game_secondary_menu_id();
 			<?php endif; ?>
 		</div>
 
-		<a class="lunar-search-icon" href="<?php echo esc_url( get_search_link() ); ?>" aria-label="<?php esc_attr_e( 'Search', 'lunar' ); ?>">
+		<a class="lunar-search-icon" href="<?php echo esc_url( home_url( '/?s=' ) ); ?>" aria-label="<?php esc_attr_e( 'Search', 'lunar' ); ?>">
 			<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 				<circle cx="11" cy="11" r="7"></circle>
 				<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
