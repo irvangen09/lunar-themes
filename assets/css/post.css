@@ -1,0 +1,96 @@
+/**
+ * Native Post-only styles — loaded only on is_singular('post').
+ *
+ * Everything shared with Wiki Artikel (heading rhythm, paragraph
+ * spacing, byline, Author Box) already comes from single.css and
+ * author.css. This file only covers the two elements unique to Post:
+ * Tag pills and the Related Posts grid.
+ */
+
+/* ---------------------------------------------------------------------
+   Tag pills
+   ------------------------------------------------------------------ */
+
+.lunar-post__tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	list-style: none;
+	margin: 32px 0 0;
+	padding: 0;
+}
+
+.lunar-post__tags a {
+	display: inline-block;
+	font-family: var( --font-mono );
+	font-size: 0.78rem;
+	padding: 5px 12px;
+	border-radius: 999px;
+	border: 1px solid var( --color-border );
+	background: var( --color-surface );
+	color: var( --color-text-muted );
+	text-decoration: none;
+}
+
+.lunar-post__tags a:hover {
+	border-color: var( --color-accent );
+	color: var( --color-accent );
+}
+
+/* ---------------------------------------------------------------------
+   Related Posts
+   ------------------------------------------------------------------ */
+
+.lunar-related-posts {
+	margin-top: 40px;
+	padding-top: 24px;
+	border-top: 1px solid var( --color-border );
+}
+
+.lunar-related-posts__label {
+	font-family: var( --font-mono );
+	font-size: 0.75rem;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var( --color-text-muted );
+	margin: 0 0 16px;
+}
+
+.lunar-related-posts__grid {
+	display: grid;
+	grid-template-columns: repeat( 3, 1fr );
+	gap: 16px;
+}
+
+.lunar-related-posts__card {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	background: var( --color-surface );
+	border: 1px solid var( --color-border );
+	border-radius: var( --radius-card );
+	padding: 14px 16px;
+	text-decoration: none;
+}
+
+.lunar-related-posts__card .lunar-badge {
+	align-self: flex-start;
+}
+
+.lunar-related-posts__title {
+	font-family: var( --font-display );
+	font-size: 0.95rem;
+	font-weight: 600;
+	color: var( --color-text );
+}
+
+.lunar-related-posts__card:hover .lunar-related-posts__title {
+	color: var( --color-accent );
+	text-decoration: underline;
+}
+
+@media ( max-width: 640px ) {
+	.lunar-related-posts__grid {
+		grid-template-columns: 1fr;
+	}
+}
