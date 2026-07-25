@@ -69,6 +69,42 @@
 	opacity: 0.9;
 }
 
+/* ---------------------------------------------------------------------
+   Contextual field-sync filters (e.g. "Tier Alat", "Peran")
+   ------------------------------------------------------------------ */
+
+.lunar-search-form__fields {
+	flex-basis: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px 28px;
+	padding-top: 14px;
+	border-top: 1px dashed var( --color-border );
+}
+
+.lunar-field-filter {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px 10px;
+	margin: 0;
+	padding: 0;
+	border: none;
+}
+
+.lunar-field-filter__label {
+	font-family: var( --font-mono );
+	font-size: 0.72rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: var( --color-text-muted );
+	padding: 0;
+}
+
+.lunar-field-filter .lunar-filter-check {
+	font-size: 0.85rem;
+}
+
 .lunar-search-result-count {
 	font-size: 0.85rem;
 	color: var( --color-text-muted );
