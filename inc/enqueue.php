@@ -129,5 +129,17 @@ function lunar_enqueue_assets(): void {
 			filemtime( get_template_directory() . '/assets/css/search.css' )
 		);
 	}
+
+	// Generic WordPress Pages (About, Contact, Privacy, etc.) — excludes
+	// the static front page, which uses front-page.php and homepage.css
+	// instead of page.php.
+	if ( is_page() && ! is_front_page() ) {
+		wp_enqueue_style(
+			'lunar-page',
+			get_template_directory_uri() . '/assets/css/page.css',
+			array( 'lunar-style' ),
+			filemtime( get_template_directory() . '/assets/css/page.css' )
+		);
+	}
 }
 add_action( 'wp_enqueue_scripts', 'lunar_enqueue_assets' );
