@@ -1,8 +1,8 @@
 <?php
 /**
- * Breadcrumb helper. Handles the single Wiki Artikel, Game archive,
- * and Author archive contexts. Other contexts (Search) will extend
- * this same function when that template is built.
+ * Breadcrumb helper. Handles the single Wiki Artikel, native Post,
+ * Game archive, and Author archive contexts. Other contexts (Search)
+ * will extend this same function when that template is built.
  *
  * @package Lunar
  */
@@ -17,6 +17,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 function lunar_breadcrumb(): void {
 	if ( is_singular( 'wiki_artikel' ) ) {
 		$crumbs = lunar_get_breadcrumb_for_wiki_artikel();
+	} elseif ( is_singular( 'post' ) ) {
+		$crumbs = lunar_get_breadcrumb_for_post();
 	} elseif ( is_tax( 'game' ) ) {
 		$crumbs = lunar_get_breadcrumb_for_game_archive();
 	} elseif ( is_author() ) {
@@ -100,6 +102,38 @@ function lunar_get_breadcrumb_for_wiki_artikel(): array {
 		$crumbs[] = array(
 			'label' => $tipe_konten->name,
 			'url'   => $tipe_konten_url,
+		);
+	}
+
+	$crumbs[] = array(
+		'label' => get_the_title(),
+		'url'   => '',
+	);
+
+	return $crumbs;
+}
+
+/**
+ * Builds the breadcrumb trail for a native Post: Beranda > Category > Judul Post.
+ * Uses only the first category if a post has several, same convention
+ * as the category badge shown on the Post template itself.
+ *
+ * @return array<int, array{label: string, url: string}>
+ */
+function lunar_get_breadcrumb_for_post(): array {
+	$crumbs = array(
+		array(
+			'label' => __( 'Beranda', 'lunar' ),
+			'url'   => home_url( '/' ),
+		),
+	);
+
+	$categories = get_the_category();
+
+	if ( ! empty( $categories ) ) {
+		$crumbs[] = array(
+			'label' => $categories[0]->name,
+			'url'   => get_category_link( $categories[0] ),
 		);
 	}
 
