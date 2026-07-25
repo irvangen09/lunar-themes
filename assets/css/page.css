@@ -12,6 +12,15 @@
 	max-width: 1000px;
 	margin: 0 auto;
 	padding: 24px 40px 64px;
+
+	/* .lunar-page is a flex item of .lunar-site-wrapper (layout.css,
+	   flex-direction: column, so width is the cross axis). Without an
+	   explicit width, non-wrapping content nested deep inside a block
+	   (e.g. Tabs' tab strip, a wide Table) can force this element past
+	   the viewport instead of respecting max-width — most visible on
+	   narrow mobile screens. */
+	width: 100%;
+	min-width: 0;
 }
 
 .lunar-page__title {
