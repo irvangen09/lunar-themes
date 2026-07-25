@@ -1,10 +1,11 @@
 <?php
 /**
- * Search Result template (MVP scope). Covers: the search box, the
- * "Game Title" checkbox filter, the Tipe Konten pill filter, results
- * list, and pagination. The contextual field-sync filters (Tier Alat,
- * Peran, etc. — shown only when a specific Tipe Konten pill is active)
- * are a deliberately separate follow-up, not part of this file.
+ * Search Result template. Covers: the search box, the "Game Title"
+ * checkbox filter, the Tipe Konten pill filter, the contextual
+ * field-sync filters (Tier Alat, Peran, etc. — rendered only when
+ * lunar_get_active_field_filters() finds at least one field with real
+ * data among the currently matching results), results list, and
+ * pagination.
  *
  * @package Lunar
  */
@@ -36,6 +37,15 @@ if ( ! is_array( $lunar_tipe_konten_all ) ) {
 // pill links so toggling Tipe Konten never discards the active search
 // term or Game checkbox selections.
 $lunar_current_url = add_query_arg( array(), null );
+
+$lunar_active_field_filters = lunar_get_active_field_filters();
+$lunar_selected_fields      = array();
+
+if ( isset( $_GET['fields'] ) && is_array( $_GET['fields'] ) ) {
+	foreach ( wp_unslash( $_GET['fields'] ) as $lunar_field_key => $lunar_field_values ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput, WordPress.Security.NonceVerification.Recommended
+		$lunar_selected_fields[ sanitize_key( $lunar_field_key ) ] = array_map( 'sanitize_text_field', (array) $lunar_field_values );
+	}
+}
 ?>
 
 <main id="main-content" class="lunar-search">
@@ -61,6 +71,29 @@ $lunar_current_url = add_query_arg( array(), null );
 					<?php echo esc_html( $lunar_game_term->name ); ?>
 				</label>
 			<?php endforeach; ?>
+
+			<?php if ( ! empty( $lunar_active_field_filters ) ) : ?>
+				<div class="lunar-search-form__fields">
+					<?php foreach ( $lunar_active_field_filters as $lunar_field_slug => $lunar_field_values ) : ?>
+						<fieldset class="lunar-field-filter">
+							<legend class="lunar-field-filter__label">
+								<?php echo esc_html( lunar_get_field_label( $lunar_field_slug ) ); ?>
+							</legend>
+							<?php foreach ( $lunar_field_values as $lunar_field_value ) : ?>
+								<label class="lunar-filter-check">
+									<input
+										type="checkbox"
+										name="fields[<?php echo esc_attr( $lunar_field_slug ); ?>][]"
+										value="<?php echo esc_attr( $lunar_field_value ); ?>"
+										<?php checked( in_array( $lunar_field_value, $lunar_selected_fields[ $lunar_field_slug ] ?? array(), true ) ); ?>
+									>
+									<?php echo esc_html( $lunar_field_value ); ?>
+								</label>
+							<?php endforeach; ?>
+						</fieldset>
+					<?php endforeach; ?>
+				</div>
+			<?php endif; ?>
 
 			<button type="submit"><?php esc_html_e( 'Cari', 'lunar' ); ?></button>
 		</form>
