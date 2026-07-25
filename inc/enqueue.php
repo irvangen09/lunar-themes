@@ -85,7 +85,14 @@ function lunar_enqueue_assets(): void {
 	);
 
 	// Page-specific stylesheets — only loaded on the template that needs them.
-	if ( is_singular( 'wiki_artikel' ) ) {
+	//
+	// single.css is shared between Wiki Artikel and native Post: both
+	// use the same .lunar-article__* markup and are meant to read
+	// identically at the paragraph/heading level (see single.php's own
+	// file comment for the reasoning). Its two-column Infobox grid rule
+	// simply never activates on a Post, since that template never
+	// outputs a .lunar-article__sidebar element.
+	if ( is_singular( 'wiki_artikel' ) || is_singular( 'post' ) ) {
 		wp_enqueue_style(
 			'lunar-single',
 			get_template_directory_uri() . '/assets/css/single.css',
@@ -94,12 +101,23 @@ function lunar_enqueue_assets(): void {
 		);
 	}
 
-	if ( is_singular( 'wiki_artikel' ) || is_author() ) {
+	if ( is_singular( 'wiki_artikel' ) || is_singular( 'post' ) || is_author() ) {
 		wp_enqueue_style(
 			'lunar-author',
 			get_template_directory_uri() . '/assets/css/author.css',
 			array( 'lunar-style' ),
 			filemtime( get_template_directory() . '/assets/css/author.css' )
+		);
+	}
+
+	// Post-only elements not shared with Wiki Artikel: Tag pills and
+	// the Related Posts grid.
+	if ( is_singular( 'post' ) ) {
+		wp_enqueue_style(
+			'lunar-post',
+			get_template_directory_uri() . '/assets/css/post.css',
+			array( 'lunar-single' ),
+			filemtime( get_template_directory() . '/assets/css/post.css' )
 		);
 	}
 
