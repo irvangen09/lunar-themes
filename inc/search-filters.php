@@ -262,3 +262,62 @@ function lunar_filter_search_by_fields( WP_Query $query ): void {
 	$query->set( 'meta_query', $meta_query );
 }
 add_action( 'pre_get_posts', 'lunar_filter_search_by_fields' );
+
+/**
+ * Prevents WordPress's automatic redirect_canonical from turning a
+ * Tipe Konten pill click (on the Search page or the Game archive page)
+ * into a request for the plain Tipe Konten taxonomy archive URL
+ * (e.g. /tipe-konten/karakter/).
+ *
+ * That archive was intentionally never built (a cross-game Tipe Konten
+ * listing mixes unrelated content and was cancelled early on), so it
+ * falls back to a generic, unstyled template — and worse, the redirect
+ * silently discards every other active filter (search term, Game
+ * checkboxes, field-sync checkboxes, or the Game archive context
+ * itself) in the process.
+ *
+ * Checking for "tipe_konten" as a $_GET key (query-string form) rather
+ * than requiring "s" to also be present is deliberate and still safe:
+ * a genuine visit to the pretty-permalink archive URL never populates
+ * $_GET with it — rewrite rules resolve straight to query vars — so
+ * this only ever matches links our own pill filters generate.
+ */
+function lunar_prevent_search_canonical_redirect(): void {
+	if ( isset( $_GET['tipe_konten'] ) ) {
+		remove_action( 'template_redirect', 'redirect_canonical' );
+	}
+}
+add_action( 'template_redirect', 'lunar_prevent_search_canonical_redirect', 0 );
+
+/**
+ * Redirects a direct visit to the plain Tipe Konten taxonomy archive
+ * (e.g. /tipe-konten/karakter/) to the Search page with that Tipe
+ * Konten filter already active, instead of letting it fall through to
+ * the generic, unstyled archive template.
+ *
+ * A cross-game Tipe Konten listing was intentionally never built (it
+ * would mix unrelated game content together), but the taxonomy is
+ * still public and its archive URL is still reachable — this keeps
+ * that URL useful instead of a dead end.
+ *
+ * Only fires when NOT already arriving via Search: a pill click from
+ * the Search page always carries "s" in the query string, which makes
+ * is_search() true and takes priority over is_tax() in the Template
+ * Hierarchy — so that case reaches search.php on its own and is left
+ * alone here.
+ */
+function lunar_redirect_tipe_konten_archive(): void {
+	if ( is_admin() || is_search() || ! is_tax( 'tipe_konten' ) ) {
+		return;
+	}
+
+	$term = get_queried_object();
+
+	if ( ! ( $term instanceof WP_Term ) ) {
+		return;
+	}
+
+	wp_safe_redirect( home_url( '/?s=&tipe_konten=' . rawurlencode( $term->slug ) ), 301 );
+	exit;
+}
+add_action( 'template_redirect', 'lunar_redirect_tipe_konten_archive' );
