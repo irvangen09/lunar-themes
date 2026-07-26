@@ -25,8 +25,16 @@ lunar_breadcrumb();
 
 	<?php if ( $lunar_term instanceof WP_Term ) : ?>
 
+		<?php $lunar_tile_image_id = lunar_get_game_tile_image_id( $lunar_term ); ?>
+
 		<header class="lunar-archive__header">
-			<span class="lunar-archive__icon" aria-hidden="true"><?php echo esc_html( $lunar_term->name ); ?></span>
+			<?php if ( $lunar_tile_image_id > 0 ) : ?>
+				<span class="lunar-archive__icon lunar-archive__icon--image" aria-hidden="true">
+					<?php echo wp_get_attachment_image( $lunar_tile_image_id, 'thumbnail', false, array( 'loading' => 'lazy' ) ); ?>
+				</span>
+			<?php else : ?>
+				<span class="lunar-archive__icon" aria-hidden="true"><?php echo esc_html( $lunar_term->name ); ?></span>
+			<?php endif; ?>
 			<div>
 				<h1><?php echo esc_html( $lunar_term->name ); ?></h1>
 				<?php if ( ! empty( $lunar_term->description ) ) : ?>
