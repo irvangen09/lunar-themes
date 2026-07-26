@@ -36,7 +36,11 @@ if ( ! is_array( $lunar_tipe_konten_all ) ) {
 // Current full URL (with existing query args) — used as the base for
 // pill links so toggling Tipe Konten never discards the active search
 // term or Game checkbox selections.
-$lunar_current_url = add_query_arg( array(), null );
+// Note: the second argument must be omitted entirely (or literally
+// `false`) to fall back to the current URL. Passing `null` explicitly
+// does NOT count as "omitted" and makes add_query_arg() return an
+// empty string instead — silently breaking every link built from it.
+$lunar_current_url = add_query_arg( array() );
 
 $lunar_active_field_filters = lunar_get_active_field_filters();
 $lunar_selected_fields      = array();
