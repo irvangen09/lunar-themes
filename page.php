@@ -16,8 +16,6 @@ get_header();
 
 while ( have_posts() ) :
 	the_post();
-
-	lunar_breadcrumb();
 	?>
 
 	<main id="main-content" class="lunar-page">

@@ -1,8 +1,9 @@
 <?php
 /**
  * Breadcrumb helper. Handles the single Wiki Artikel, native Post,
- * Game archive, and Author archive contexts. Other contexts (Search)
- * will extend this same function when that template is built.
+ * Game archive, and Author archive contexts. Search and Pages (Laman)
+ * are intentionally not handled here — lunar_breadcrumb() is a no-op
+ * for both, by design, not because they're pending.
  *
  * @package Lunar
  */
