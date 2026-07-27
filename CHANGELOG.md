@@ -8,6 +8,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 Nothing yet.
 
+## [0.1.1] - 2026-07-27
+
+### Fixed
+
+- The 404 page's search link no longer resolves to a broken URL.
+- Clicking a Tipe Konten filter pill no longer risks losing other active filters — the canonical-redirect cancellation now only cancels the one specific redirect it needs to, instead of disabling WordPress's canonical redirect handling for the whole request.
+- Homepage, Search results, and Author archive pages now each have a proper top-level heading, improving screen reader and search engine support.
+- Site and footer navigation are now labeled for assistive technology so they can be told apart.
+- The navigation dropdown's expanded/collapsed state is now announced correctly to screen readers on desktop, not only on the mobile accordion.
+
+### Changed
+
+- The theme no longer references LunarCore's internal classes directly; it now calls a small set of public functions the plugin exposes instead (pairs with LunarCore 0.3.0).
+- Minor internal cleanup: removed an unused CSS utility class, consolidated duplicated filter logic in the Search template, removed a no-op breadcrumb call on Pages, normalized inconsistent line endings, and translated a leftover English string.
+
 ## [0.1.0] - 2026-07-26
 
 First tagged release.
