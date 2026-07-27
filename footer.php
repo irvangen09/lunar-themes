@@ -38,7 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<p class="lunar-site-footer__notice">
 				<?php
 				esc_html_e(
-					'No footer menu assigned yet — create one under Appearance > Menus and assign it to the "Footer Menu" location.',
+					'Menu footer belum diatur — buat satu di Appearance > Menus lalu tetapkan ke lokasi "Footer Menu".',
 					'lunar'
 				);
 				?>
