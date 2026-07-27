@@ -264,30 +264,59 @@ function lunar_filter_search_by_fields( WP_Query $query ): void {
 add_action( 'pre_get_posts', 'lunar_filter_search_by_fields' );
 
 /**
- * Prevents WordPress's automatic redirect_canonical from turning a
- * Tipe Konten pill click (on the Search page or the Game archive page)
- * into a request for the plain Tipe Konten taxonomy archive URL
- * (e.g. /tipe-konten/karakter/).
+ * Cancels WordPress's automatic canonical redirect specifically when it
+ * would turn a Tipe Konten pill click (on the Search page or the Game
+ * archive page) into a request for the plain Tipe Konten taxonomy
+ * archive URL (e.g. /tipe-konten/karakter/).
  *
  * That archive was intentionally never built (a cross-game Tipe Konten
- * listing mixes unrelated content and was cancelled early on), so it
- * falls back to a generic, unstyled template — and worse, the redirect
- * silently discards every other active filter (search term, Game
- * checkboxes, field-sync checkboxes, or the Game archive context
- * itself) in the process.
+ * listing mixes unrelated content and was cancelled early on), so
+ * letting the redirect through would send visitors to a generic,
+ * unstyled template — and worse, silently discard every other active
+ * filter (search term, Game checkboxes, field-sync checkboxes, or the
+ * Game archive context itself) in the process.
+ *
+ * This hooks the redirect_canonical filter rather than removing the
+ * redirect_canonical action outright: redirect_canonical() still runs
+ * its full logic for every other reason it might redirect a request
+ * (trailing slash, wrong case, etc.) — only the one specific,
+ * already-computed redirect toward the Tipe Konten archive is
+ * cancelled, and only when it's actually that redirect.
  *
  * Checking for "tipe_konten" as a $_GET key (query-string form) rather
  * than requiring "s" to also be present is deliberate and still safe:
  * a genuine visit to the pretty-permalink archive URL never populates
  * $_GET with it — rewrite rules resolve straight to query vars — so
  * this only ever matches links our own pill filters generate.
+ *
+ * @param string|false $redirect_url  The redirect target WordPress computed, or false.
+ * @param string       $requested_url The originally requested URL.
+ * @return string|false
  */
-function lunar_prevent_search_canonical_redirect(): void {
-	if ( isset( $_GET['tipe_konten'] ) ) {
-		remove_action( 'template_redirect', 'redirect_canonical' );
+function lunar_prevent_search_canonical_redirect( $redirect_url, string $requested_url ) {
+	if ( false === $redirect_url || ! isset( $_GET['tipe_konten'] ) ) {
+		return $redirect_url;
 	}
+
+	$tipe_konten_tax = get_taxonomy( 'tipe_konten' );
+
+	if ( ! ( $tipe_konten_tax instanceof WP_Taxonomy ) ) {
+		return $redirect_url;
+	}
+
+	$archive_slug = ( is_array( $tipe_konten_tax->rewrite ) && ! empty( $tipe_konten_tax->rewrite['slug'] ) )
+		? $tipe_konten_tax->rewrite['slug']
+		: $tipe_konten_tax->name;
+
+	$redirect_path = (string) wp_parse_url( $redirect_url, PHP_URL_PATH );
+
+	if ( false === strpos( $redirect_path, '/' . $archive_slug . '/' ) ) {
+		return $redirect_url;
+	}
+
+	return false;
 }
-add_action( 'template_redirect', 'lunar_prevent_search_canonical_redirect', 0 );
+add_filter( 'redirect_canonical', 'lunar_prevent_search_canonical_redirect', 10, 2 );
 
 /**
  * Redirects a direct visit to the plain Tipe Konten taxonomy archive
