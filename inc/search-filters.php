@@ -46,6 +46,26 @@ function lunar_get_field_label( string $field ): string {
 }
 
 /**
+ * Sanitized, non-empty list of game term slugs selected via the
+ * "games[]" checkboxes on the Search form, if any.
+ *
+ * Shared by lunar_filter_search_by_game() (applied to the main search
+ * query) and lunar_get_active_field_filters() (which runs its own,
+ * separate query) so both always agree on what "selected games"
+ * means, instead of sanitizing/filtering $_GET['games'] independently
+ * in two places that could drift out of sync.
+ *
+ * @return string[]
+ */
+function lunar_get_selected_game_slugs(): array {
+	if ( ! isset( $_GET['games'] ) ) {
+		return array();
+	}
+
+	return array_filter( array_map( 'sanitize_title', (array) wp_unslash( $_GET['games'] ) ) );
+}
+
+/**
  * Computes which recognized field-sync fields (and which distinct
  * values of each) actually have data among the posts matching the
  * currently active search term, Game filter, and Tipe Konten filter —
@@ -84,7 +104,7 @@ function lunar_get_active_field_filters(): array {
 	}
 
 	if ( isset( $_GET['games'] ) ) {
-		$selected_games = array_filter( array_map( 'sanitize_title', (array) wp_unslash( $_GET['games'] ) ) );
+		$selected_games = lunar_get_selected_game_slugs();
 
 		if ( ! empty( $selected_games ) ) {
 			$tax_query[] = array(
@@ -175,12 +195,7 @@ function lunar_filter_search_by_game( WP_Query $query ): void {
 		return;
 	}
 
-	if ( ! isset( $_GET['games'] ) ) {
-		return;
-	}
-
-	$selected_games = array_map( 'sanitize_title', (array) wp_unslash( $_GET['games'] ) );
-	$selected_games = array_filter( $selected_games );
+	$selected_games = lunar_get_selected_game_slugs();
 
 	if ( empty( $selected_games ) ) {
 		return;
