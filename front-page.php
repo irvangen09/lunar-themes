@@ -2,8 +2,8 @@
 /**
  * Homepage template. Used automatically by WordPress when a static Page
  * is set as the front page (Settings > Reading). Shows the Game Tiles
- * grid and the latest Wiki Artikel entries — no page title or hero
- * text, by design.
+ * grid and the latest Wiki Artikel entries — no visible page title or
+ * hero text, by design.
  *
  * @package Lunar
  */
@@ -19,6 +19,16 @@ while ( have_posts() ) :
 	?>
 
 	<main id="main-content">
+
+		<?php
+		/*
+		 * No visible page title is shown here by design, but the document
+		 * still needs exactly one h1 for a correct heading outline (screen
+		 * readers and search engines rely on it). Visually hidden, not
+		 * removed.
+		 */
+		?>
+		<h1 class="lunar-visually-hidden"><?php bloginfo( 'name' ); ?></h1>
 
 		<?php
 		$lunar_game_terms = lunar_get_game_terms();
