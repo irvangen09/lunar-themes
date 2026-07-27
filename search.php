@@ -55,7 +55,7 @@ if ( isset( $_GET['fields'] ) && is_array( $_GET['fields'] ) ) {
 <main id="main-content" class="lunar-search">
 
 	<section class="lunar-search-hero">
-		<p class="lunar-search-hero__label"><?php esc_html_e( 'Hasil Pencarian', 'lunar' ); ?></p>
+		<h1 class="lunar-search-hero__label"><?php esc_html_e( 'Hasil Pencarian', 'lunar' ); ?></h1>
 
 		<form role="search" method="get" action="<?php echo esc_url( home_url( '/' ) ); ?>" class="lunar-search-form">
 			<input type="text" name="s" value="<?php echo esc_attr( $lunar_search_query ); ?>" placeholder="<?php esc_attr_e( 'Cari artikel...', 'lunar' ); ?>">
