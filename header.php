@@ -58,11 +58,12 @@ $lunar_secondary_menu_id = lunar_get_game_secondary_menu_id();
 				<?php
 				wp_nav_menu(
 					array(
-						'menu'            => $lunar_secondary_menu_id,
-						'container'       => 'nav',
-						'container_class' => 'lunar-site-nav',
-						'menu_class'      => 'lunar-site-nav__list',
-						'fallback_cb'     => false,
+						'menu'                 => $lunar_secondary_menu_id,
+						'container'            => 'nav',
+						'container_class'      => 'lunar-site-nav',
+						'container_aria_label' => __( 'Menu Utama', 'lunar' ),
+						'menu_class'           => 'lunar-site-nav__list',
+						'fallback_cb'          => false,
 					)
 				);
 				?>
@@ -72,11 +73,12 @@ $lunar_secondary_menu_id = lunar_get_game_secondary_menu_id();
 				<?php
 				wp_nav_menu(
 					array(
-						'theme_location'  => 'primary',
-						'container'       => 'nav',
-						'container_class' => 'lunar-site-nav',
-						'menu_class'      => 'lunar-site-nav__list',
-						'fallback_cb'     => false,
+						'theme_location'       => 'primary',
+						'container'            => 'nav',
+						'container_class'      => 'lunar-site-nav',
+						'container_aria_label' => __( 'Menu Utama', 'lunar' ),
+						'menu_class'           => 'lunar-site-nav__list',
+						'fallback_cb'          => false,
 					)
 				);
 				?>

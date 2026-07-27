@@ -22,12 +22,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php
 			wp_nav_menu(
 				array(
-					'theme_location'  => 'footer',
-					'container'       => 'nav',
-					'container_class' => 'lunar-site-footer__links',
-					'menu_class'      => 'lunar-site-footer__links-list',
-					'depth'           => 1,
-					'fallback_cb'     => false,
+					'theme_location'       => 'footer',
+					'container'            => 'nav',
+					'container_class'      => 'lunar-site-footer__links',
+					'container_aria_label' => __( 'Menu Footer', 'lunar' ),
+					'menu_class'           => 'lunar-site-footer__links-list',
+					'depth'                => 1,
+					'fallback_cb'          => false,
 				)
 			);
 			?>
