@@ -38,6 +38,28 @@ function lunar_resource_hints( array $hints, string $relation_type ): array {
 add_filter( 'wp_resource_hints', 'lunar_resource_hints', 10, 2 );
 
 /**
+ * Cache-busting version string for a theme asset file.
+ *
+ * Falls back to the theme's own Version header if the file can't be
+ * found on disk. filemtime() would otherwise fail silently (returning
+ * false, coerced to an empty version string) if a future refactor ever
+ * renames/removes an asset without its enqueue call being updated to
+ * match.
+ *
+ * @param string $relative_path Path relative to the theme root, e.g. '/assets/css/tokens.css'.
+ * @return string|int
+ */
+function lunar_asset_version( string $relative_path ) {
+	$absolute_path = get_template_directory() . $relative_path;
+
+	if ( file_exists( $absolute_path ) ) {
+		return filemtime( $absolute_path );
+	}
+
+	return wp_get_theme()->get( 'Version' );
+}
+
+/**
  * Enqueues frontend assets in dependency order:
  * fonts -> design tokens -> main stylesheet (which relies on both).
  */
@@ -53,14 +75,14 @@ function lunar_enqueue_assets(): void {
 		'lunar-tokens',
 		get_template_directory_uri() . '/assets/css/tokens.css',
 		array( 'lunar-fonts' ),
-		filemtime( get_template_directory() . '/assets/css/tokens.css' )
+		lunar_asset_version( '/assets/css/tokens.css' )
 	);
 
 	wp_enqueue_style(
 		'lunar-layout',
 		get_template_directory_uri() . '/assets/css/layout.css',
 		array( 'lunar-tokens' ),
-		filemtime( get_template_directory() . '/assets/css/layout.css' )
+		lunar_asset_version( '/assets/css/layout.css' )
 	);
 
 	wp_enqueue_style(
@@ -77,7 +99,7 @@ function lunar_enqueue_assets(): void {
 		'lunar-navigation',
 		get_template_directory_uri() . '/assets/js/navigation.js',
 		array(),
-		filemtime( get_template_directory() . '/assets/js/navigation.js' ),
+		lunar_asset_version( '/assets/js/navigation.js' ),
 		array(
 			'strategy'  => 'defer',
 			'in_footer' => true,
@@ -97,7 +119,7 @@ function lunar_enqueue_assets(): void {
 			'lunar-single',
 			get_template_directory_uri() . '/assets/css/single.css',
 			array( 'lunar-style' ),
-			filemtime( get_template_directory() . '/assets/css/single.css' )
+			lunar_asset_version( '/assets/css/single.css' )
 		);
 	}
 
@@ -106,7 +128,7 @@ function lunar_enqueue_assets(): void {
 			'lunar-author',
 			get_template_directory_uri() . '/assets/css/author.css',
 			array( 'lunar-style' ),
-			filemtime( get_template_directory() . '/assets/css/author.css' )
+			lunar_asset_version( '/assets/css/author.css' )
 		);
 	}
 
@@ -117,7 +139,7 @@ function lunar_enqueue_assets(): void {
 			'lunar-post',
 			get_template_directory_uri() . '/assets/css/post.css',
 			array( 'lunar-single' ),
-			filemtime( get_template_directory() . '/assets/css/post.css' )
+			lunar_asset_version( '/assets/css/post.css' )
 		);
 	}
 
@@ -126,7 +148,7 @@ function lunar_enqueue_assets(): void {
 			'lunar-homepage',
 			get_template_directory_uri() . '/assets/css/homepage.css',
 			array( 'lunar-style' ),
-			filemtime( get_template_directory() . '/assets/css/homepage.css' )
+			lunar_asset_version( '/assets/css/homepage.css' )
 		);
 	}
 
@@ -135,7 +157,7 @@ function lunar_enqueue_assets(): void {
 			'lunar-archive',
 			get_template_directory_uri() . '/assets/css/archive.css',
 			array( 'lunar-style' ),
-			filemtime( get_template_directory() . '/assets/css/archive.css' )
+			lunar_asset_version( '/assets/css/archive.css' )
 		);
 	}
 
@@ -144,7 +166,7 @@ function lunar_enqueue_assets(): void {
 			'lunar-search',
 			get_template_directory_uri() . '/assets/css/search.css',
 			array( 'lunar-style' ),
-			filemtime( get_template_directory() . '/assets/css/search.css' )
+			lunar_asset_version( '/assets/css/search.css' )
 		);
 	}
 
@@ -156,7 +178,7 @@ function lunar_enqueue_assets(): void {
 			'lunar-page',
 			get_template_directory_uri() . '/assets/css/page.css',
 			array( 'lunar-style' ),
-			filemtime( get_template_directory() . '/assets/css/page.css' )
+			lunar_asset_version( '/assets/css/page.css' )
 		);
 	}
 }
