@@ -26,7 +26,16 @@ get_header();
 			<?php esc_html_e( 'Kembali ke Beranda', 'lunar' ); ?>
 		</a>
 		&mdash;
-		<a href="<?php echo esc_url( get_search_link() ); ?>">
+		<?php
+		/*
+		 * Deliberately not get_search_link(): called with no search term
+		 * outside of a search context, it resolves to a pretty-permalink
+		 * URL with an empty %search% segment (e.g. "/search/"), which does
+		 * not match WordPress's search rewrite rule and 404s. Building the
+		 * plain query-string URL avoids that entirely.
+		 */
+		?>
+		<a href="<?php echo esc_url( home_url( '/?s=' ) ); ?>">
 			<?php esc_html_e( 'Cari artikel', 'lunar' ); ?>
 		</a>
 	</p>
