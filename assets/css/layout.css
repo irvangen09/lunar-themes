@@ -1,19 +1,8 @@
 /**
  * Layout & shared component styles — loaded on every page.
- * Covers: site header, footer, breadcrumb, badge, filter pill/checkbox,
- * and a small ".lunar-container" utility reused by page-specific
- * stylesheets (single.css, homepage.css, archive.css, search.css).
+ * Covers: site header, footer, breadcrumb, badge, and filter
+ * pill/checkbox styles shared across templates.
  */
-
-/* ---------------------------------------------------------------------
-   Shared layout utility
-   ------------------------------------------------------------------ */
-
-.lunar-container {
-	max-width: 1100px;
-	margin: 0 auto;
-	padding: 0 40px;
-}
 
 .lunar-site-wrapper {
 	display: flex;
