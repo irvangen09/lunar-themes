@@ -30,7 +30,12 @@ lunar_breadcrumb();
 <main id="main-content" class="lunar-archive">
 
 	<header class="lunar-archive__header lunar-archive__header--author">
-		<?php lunar_render_author_box( $lunar_author_id ); ?>
+		<?php
+		// True: this is the page's own top-level heading (the Author
+		// Archive otherwise has no h1), unlike the Author Box shown at
+		// the end of a single article, which stays a plain paragraph.
+		lunar_render_author_box( $lunar_author_id, true );
+		?>
 	</header>
 
 	<?php if ( have_posts() ) : ?>
@@ -40,8 +45,8 @@ lunar_breadcrumb();
 			while ( have_posts() ) :
 				the_post();
 
-				$lunar_tipe_konten_terms = get_the_terms( get_the_ID(), 'tipe_konten' );
-				$lunar_article_game_term = null;
+				$lunar_tipe_konten_terms  = get_the_terms( get_the_ID(), 'tipe_konten' );
+				$lunar_article_game_term  = null;
 				$lunar_article_game_terms = get_the_terms( get_the_ID(), 'game' );
 
 				if ( is_array( $lunar_article_game_terms ) && ! empty( $lunar_article_game_terms ) ) {

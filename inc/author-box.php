@@ -58,10 +58,17 @@ function lunar_render_byline( int $user_id = 0 ): void {
  * simply omitted — name, avatar, and bio (all native WordPress) still
  * render on their own.
  *
- * @param int $user_id User ID. Defaults to the current post's author
- *                      when called from inside the Loop.
+ * @param int  $user_id            User ID. Defaults to the current post's
+ *                                 author when called from inside the Loop.
+ * @param bool $is_archive_heading Whether this call is the Author Archive's
+ *                                 page header rather than the box shown at
+ *                                 the end of a single article. When true,
+ *                                 the author's name is rendered as the
+ *                                 page's h1 instead of a plain paragraph,
+ *                                 since the Archive template otherwise has
+ *                                 no top-level heading of its own.
  */
-function lunar_render_author_box( int $user_id = 0 ): void {
+function lunar_render_author_box( int $user_id = 0, bool $is_archive_heading = false ): void {
 	if ( 0 === $user_id ) {
 		$user_id = (int) get_the_author_meta( 'ID' );
 	}
@@ -81,17 +88,19 @@ function lunar_render_author_box( int $user_id = 0 ): void {
 		$role  = \Lunar\Users\Author_Fields::get_role( $user_id );
 		$links = \Lunar\Users\Author_Fields::get_social_links( $user_id );
 	}
+
+	$lunar_name_tag = $is_archive_heading ? 'h1' : 'p';
 	?>
 	<div class="lunar-author-box">
 		<?php echo get_avatar( $user_id, 96, '', '', array( 'class' => 'lunar-author-box__avatar' ) ); ?>
 
 		<div class="lunar-author-box__body">
-			<p class="lunar-author-box__name">
+			<<?php echo tag_escape( $lunar_name_tag ); ?> class="lunar-author-box__name">
 				<a href="<?php echo esc_url( $archive_url ); ?>"><?php echo esc_html( $display_name ); ?></a>
 				<?php if ( '' !== $role ) : ?>
 					<span class="lunar-author-box__role"><?php echo esc_html( $role ); ?></span>
 				<?php endif; ?>
-			</p>
+			</<?php echo tag_escape( $lunar_name_tag ); ?>>
 
 			<?php if ( '' !== $bio ) : ?>
 				<p class="lunar-author-box__bio"><?php echo esc_html( $bio ); ?></p>
