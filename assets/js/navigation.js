@@ -104,6 +104,8 @@
 	parentLinks.forEach( function ( link ) {
 		link.setAttribute( 'aria-expanded', 'false' );
 
+		var item = link.parentElement;
+
 		link.addEventListener( 'click', function ( event ) {
 			// On wider screens the dropdown already opens on hover or
 			// keyboard focus, so clicking the link keeps navigating
@@ -115,7 +117,6 @@
 
 			event.preventDefault();
 
-			var item = link.parentElement;
 			var willOpen = ! item.classList.contains( 'is-open' );
 
 			if ( willOpen ) {
@@ -124,6 +125,35 @@
 
 			item.classList.toggle( 'is-open', willOpen );
 			link.setAttribute( 'aria-expanded', willOpen ? 'true' : 'false' );
+		} );
+
+		// On Desktop the dropdown itself is revealed purely by CSS
+		// (:hover / :focus-within, see layout.css), but aria-expanded
+		// still needs updating in step so screen reader users tabbing
+		// through the menu hear the correct state. "focusin"/"focusout"
+		// bubble and fire for the link itself and any submenu link
+		// inside it, mirroring :focus-within's own matching scope.
+		item.addEventListener( 'focusin', function () {
+			if ( window.matchMedia( MOBILE_QUERY ).matches ) {
+				return;
+			}
+
+			link.setAttribute( 'aria-expanded', 'true' );
+		} );
+
+		item.addEventListener( 'focusout', function () {
+			if ( window.matchMedia( MOBILE_QUERY ).matches ) {
+				return;
+			}
+
+			// Deferred a tick so the newly focused element is already
+			// in place when checked — "focusout" fires before focus
+			// lands on its next target.
+			window.requestAnimationFrame( function () {
+				if ( ! item.contains( document.activeElement ) ) {
+					link.setAttribute( 'aria-expanded', 'false' );
+				}
+			} );
 		} );
 	} );
 
