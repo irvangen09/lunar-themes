@@ -55,7 +55,7 @@ function lunar_get_field_label( string $field ): string {
  * @return array<string, string[]> Field slug => list of distinct values.
  */
 function lunar_get_active_field_filters(): array {
-	if ( ! class_exists( '\Lunar\Content\Meta_Fields' ) ) {
+	if ( ! function_exists( 'lunar_core_get_recognized_fields' ) ) {
 		return array();
 	}
 
@@ -110,8 +110,8 @@ function lunar_get_active_field_filters(): array {
 	$placeholders   = implode( ', ', array_fill( 0, count( $matching_ids ), '%d' ) );
 	$active_filters = array();
 
-	foreach ( \Lunar\Content\Meta_Fields::get_recognized_fields() as $field ) {
-		$meta_key = \Lunar\Content\Meta_Fields::get_meta_key( $field );
+	foreach ( lunar_core_get_recognized_fields() as $field ) {
+		$meta_key = lunar_core_get_field_meta_key( $field );
 
 		if ( null === $meta_key ) {
 			continue;
@@ -215,11 +215,11 @@ function lunar_filter_search_by_fields( WP_Query $query ): void {
 		return;
 	}
 
-	if ( ! class_exists( '\Lunar\Content\Meta_Fields' ) ) {
+	if ( ! function_exists( 'lunar_core_get_recognized_fields' ) ) {
 		return;
 	}
 
-	$recognized_fields  = \Lunar\Content\Meta_Fields::get_recognized_fields();
+	$recognized_fields  = lunar_core_get_recognized_fields();
 	$submitted_fields   = wp_unslash( $_GET['fields'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 	$meta_query         = (array) $query->get( 'meta_query' );
 	$applied_any_filter = false;
@@ -231,7 +231,7 @@ function lunar_filter_search_by_fields( WP_Query $query ): void {
 			continue;
 		}
 
-		$meta_key = \Lunar\Content\Meta_Fields::get_meta_key( $field );
+		$meta_key = lunar_core_get_field_meta_key( $field );
 
 		if ( null === $meta_key ) {
 			continue;

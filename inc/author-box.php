@@ -53,10 +53,11 @@ function lunar_render_byline( int $user_id = 0 ): void {
 /**
  * Outputs the Author Box for a given user.
  *
- * Role and social links come from the companion plugin (LunarCore).
- * If that class isn't available for any reason, those two pieces are
- * simply omitted — name, avatar, and bio (all native WordPress) still
- * render on their own.
+ * Role and social links come from the companion plugin's (LunarCore)
+ * public API functions. If those functions aren't available for any
+ * reason (e.g. the plugin is inactive), those two pieces are simply
+ * omitted — name, avatar, and bio (all native WordPress) still render
+ * on their own.
  *
  * @param int  $user_id            User ID. Defaults to the current post's
  *                                 author when called from inside the Loop.
@@ -84,9 +85,12 @@ function lunar_render_author_box( int $user_id = 0, bool $is_archive_heading = f
 	$role  = '';
 	$links = array();
 
-	if ( class_exists( '\Lunar\Users\Author_Fields' ) ) {
-		$role  = \Lunar\Users\Author_Fields::get_role( $user_id );
-		$links = \Lunar\Users\Author_Fields::get_social_links( $user_id );
+	if ( function_exists( 'lunar_core_get_author_role' ) ) {
+		$role = lunar_core_get_author_role( $user_id );
+	}
+
+	if ( function_exists( 'lunar_core_get_author_social_links' ) ) {
+		$links = lunar_core_get_author_social_links( $user_id );
 	}
 
 	$lunar_name_tag = $is_archive_heading ? 'h1' : 'p';
