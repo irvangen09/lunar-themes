@@ -182,7 +182,7 @@
 
 .lunar-page__content .wp-block-image img,
 .lunar-page__content .wp-block-cover img,
-.wp-block-media-text__media img {
+.lunar-page__content .wp-block-media-text__media img {
 	border-radius: var( --radius-card );
 }
 
@@ -311,7 +311,10 @@
 		font-size: 2rem;
 	}
 
-	.wp-block-media-text {
+	/* !important is necessary here: the core Media & Text block writes
+	   grid-template-columns as an inline style (based on the editor's
+	   media-width slider), which normal CSS specificity cannot override. */
+	.lunar-page__content .wp-block-media-text {
 		grid-template-columns: 1fr !important;
 	}
 }
