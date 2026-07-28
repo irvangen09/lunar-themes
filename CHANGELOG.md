@@ -8,6 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 Nothing yet.
 
+## [0.1.2] - 2026-07-28
+
+### Fixed
+
+- Normalized remaining CRLF line endings in several files (`single.php`, `post.css`, `author.css`, `author-box.php`, `author.php`, `page.css`) that were still inconsistent despite being reported as normalized in 0.1.1.
+- Restored a missing trailing newline at the end of a few files (`404.php`, `page.php`, `footer.php`, `style.css`, `CHANGELOG.md`).
+
 ## [0.1.1] - 2026-07-27
 
 ### Fixed
