@@ -43,7 +43,7 @@ function lunar_get_game_terms(): array {
 }
 
 /**
- * Returns every Tipe Konten term actually used by posts under a given
+ * Returns every Content Type term actually used by posts under a given
  * Game term — never a hardcoded list, so a new game with an unusual
  * content type vocabulary (e.g. "Kostum" for a non-farming-sim title)
  * automatically gets its own pills without any code change.
@@ -55,6 +55,10 @@ function lunar_get_game_terms(): array {
  * @return WP_Term[]
  */
 function lunar_get_content_types_for_game( int $game_term_id ): array {
+	if ( ! function_exists( 'lunar_core_get_taxonomy_slug_content_type' ) ) {
+		return array();
+	}
+
 	$post_ids = get_objects_in_term( $game_term_id, 'game' );
 
 	if ( is_wp_error( $post_ids ) || empty( $post_ids ) ) {
@@ -63,7 +67,7 @@ function lunar_get_content_types_for_game( int $game_term_id ): array {
 
 	$terms = get_terms(
 		array(
-			'taxonomy'   => 'tipe_konten',
+			'taxonomy'   => lunar_core_get_taxonomy_slug_content_type(),
 			'object_ids' => $post_ids,
 			'hide_empty' => false,
 		)
