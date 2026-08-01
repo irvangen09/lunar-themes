@@ -74,15 +74,19 @@ while ( have_posts() ) :
 
 		$lunar_articles_paged = max( 1, $lunar_articles_paged );
 
-		$lunar_latest_articles = new WP_Query(
-			array(
-				'post_type'      => 'wiki_artikel',
-				'posts_per_page' => 3,
-				'paged'          => $lunar_articles_paged,
-				'orderby'        => 'date',
-				'order'          => 'DESC',
-			)
-		);
+		if ( function_exists( 'lunar_core_get_post_type_slug' ) ) :
+			$lunar_latest_articles = new WP_Query(
+				array(
+					'post_type'      => lunar_core_get_post_type_slug(),
+					'posts_per_page' => 3,
+					'paged'          => $lunar_articles_paged,
+					'orderby'        => 'date',
+					'order'          => 'DESC',
+				)
+			);
+		else :
+			$lunar_latest_articles = new WP_Query( array( 'post__in' => array( 0 ) ) ); // No plugin, no articles to show.
+		endif;
 
 		if ( $lunar_latest_articles->have_posts() ) :
 			?>
@@ -95,12 +99,17 @@ while ( have_posts() ) :
 					while ( $lunar_latest_articles->have_posts() ) :
 						$lunar_latest_articles->the_post();
 
-						$lunar_tipe_konten_terms = get_the_terms( get_the_ID(), 'tipe_konten' );
+						$lunar_content_type_slug  = function_exists( 'lunar_core_get_taxonomy_slug_content_type' )
+							? lunar_core_get_taxonomy_slug_content_type()
+							: '';
+						$lunar_content_type_terms = $lunar_content_type_slug
+							? get_the_terms( get_the_ID(), $lunar_content_type_slug )
+							: false;
 						?>
 						<article class="lunar-article-card">
-							<?php if ( is_array( $lunar_tipe_konten_terms ) && ! empty( $lunar_tipe_konten_terms ) ) : ?>
+							<?php if ( is_array( $lunar_content_type_terms ) && ! empty( $lunar_content_type_terms ) ) : ?>
 								<span class="lunar-badge">
-									<?php echo esc_html( $lunar_tipe_konten_terms[0]->name ); ?>
+									<?php echo esc_html( $lunar_content_type_terms[0]->name ); ?>
 								</span>
 							<?php endif; ?>
 
