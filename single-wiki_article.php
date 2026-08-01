@@ -1,6 +1,6 @@
 <?php
 /**
- * Single Wiki Artikel template.
+ * Single Wiki Article template.
  *
  * Infobox is split out of the content by lunar_get_article_layout()
  * and rendered as its own sidebar element, sitting next to the main
@@ -16,6 +16,12 @@
  * near the top. On desktop, single.css assigns explicit grid columns
  * so the visual left/right position doesn't depend on this order.
  *
+ * Note: this file is named to match WordPress's Template Hierarchy
+ * convention (single-{post_type_slug}.php) for the current post type
+ * slug. If the companion plugin's post type slug ever changes again,
+ * this filename needs to be renamed to match, until the site adopts a
+ * single_template filter instead of relying on automatic file matching.
+ *
  * @package Lunar
  */
 
@@ -30,9 +36,14 @@ while ( have_posts() ) :
 
 	lunar_breadcrumb();
 
-	$lunar_tipe_konten_terms = get_the_terms( get_the_ID(), 'tipe_konten' );
-	$lunar_update_notes      = get_post_meta( get_the_ID(), 'lunar_core_update_notes', true );
-	$lunar_update_notes_list = array();
+	$lunar_content_type_slug  = function_exists( 'lunar_core_get_taxonomy_slug_content_type' )
+		? lunar_core_get_taxonomy_slug_content_type()
+		: '';
+	$lunar_content_type_terms = $lunar_content_type_slug
+		? get_the_terms( get_the_ID(), $lunar_content_type_slug )
+		: false;
+	$lunar_update_notes       = get_post_meta( get_the_ID(), 'lunar_core_update_notes', true );
+	$lunar_update_notes_list  = array();
 
 	if ( ! empty( trim( (string) $lunar_update_notes ) ) ) {
 		$lunar_update_notes_list = array_filter( array_map( 'trim', explode( "\n", $lunar_update_notes ) ) );
@@ -44,9 +55,9 @@ while ( have_posts() ) :
 	<main id="main-content" class="lunar-article">
 		<article <?php post_class( 'lunar-article__entry' ); ?> id="post-<?php the_ID(); ?>">
 
-			<?php if ( is_array( $lunar_tipe_konten_terms ) && ! empty( $lunar_tipe_konten_terms ) ) : ?>
+			<?php if ( is_array( $lunar_content_type_terms ) && ! empty( $lunar_content_type_terms ) ) : ?>
 				<span class="lunar-badge lunar-badge--category">
-					<?php echo esc_html( $lunar_tipe_konten_terms[0]->name ); ?>
+					<?php echo esc_html( $lunar_content_type_terms[0]->name ); ?>
 				</span>
 			<?php endif; ?>
 
