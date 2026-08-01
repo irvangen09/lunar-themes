@@ -4,9 +4,12 @@
  * specific game title, if any, the current request belongs to) and to
  * resolve that game's secondary navigation menu.
  *
- * Reads the taxonomy slug and term meta key as plain string literals —
- * treated as a stable public data contract, not a dependency on the
- * companion plugin's internal PHP classes.
+ * Uses the companion plugin's public API (public-api.php) to check the
+ * current post type, and reads the "game" taxonomy slug and term meta
+ * key as plain string literals — the taxonomy slug is treated as a
+ * stable public data contract (it has not changed and is not part of
+ * this refactor), not a dependency on the companion plugin's internal
+ * PHP classes.
  *
  * @package Lunar
  */
@@ -23,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return WP_Term|null
  */
 function lunar_get_current_game_term(): ?WP_Term {
-	if ( is_singular( 'wiki_artikel' ) ) {
+	if ( function_exists( 'lunar_core_is_wiki_article' ) && lunar_core_is_wiki_article() ) {
 		$terms = get_the_terms( get_the_ID(), 'game' );
 
 		if ( ! is_array( $terms ) ) {
