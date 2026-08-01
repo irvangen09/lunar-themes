@@ -64,6 +64,12 @@ function lunar_asset_version( string $relative_path ) {
  * fonts -> design tokens -> main stylesheet (which relies on both).
  */
 function lunar_enqueue_assets(): void {
+	// Computed once and reused below — avoids repeating the function_exists()
+	// guard for every conditional that needs to know if this is a Wiki
+	// Article (post_type slug is owned by the companion plugin, not a
+	// literal this theme should hardcode).
+	$is_wiki_article = function_exists( 'lunar_core_is_wiki_article' ) && lunar_core_is_wiki_article();
+
 	wp_enqueue_style(
 		'lunar-fonts',
 		'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Lora:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap',
@@ -114,7 +120,7 @@ function lunar_enqueue_assets(): void {
 	// file comment for the reasoning). Its two-column Infobox grid rule
 	// simply never activates on a Post, since that template never
 	// outputs a .lunar-article__sidebar element.
-	if ( is_singular( 'wiki_artikel' ) || is_singular( 'post' ) ) {
+	if ( $is_wiki_article || is_singular( 'post' ) ) {
 		wp_enqueue_style(
 			'lunar-single',
 			get_template_directory_uri() . '/assets/css/single.css',
@@ -123,7 +129,7 @@ function lunar_enqueue_assets(): void {
 		);
 	}
 
-	if ( is_singular( 'wiki_artikel' ) || is_singular( 'post' ) || is_author() ) {
+	if ( $is_wiki_article || is_singular( 'post' ) || is_author() ) {
 		wp_enqueue_style(
 			'lunar-author',
 			get_template_directory_uri() . '/assets/css/author.css',
