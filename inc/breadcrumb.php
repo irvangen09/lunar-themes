@@ -1,6 +1,6 @@
 <?php
 /**
- * Breadcrumb helper. Handles the single Wiki Artikel, native Post,
+ * Breadcrumb helper. Handles the single Wiki Article, native Post,
  * Game archive, and Author archive contexts. Search and Pages (Laman)
  * are intentionally not handled here — lunar_breadcrumb() is a no-op
  * for both, by design, not because they're pending.
@@ -16,8 +16,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Outputs the breadcrumb trail for the current request.
  */
 function lunar_breadcrumb(): void {
-	if ( is_singular( 'wiki_artikel' ) ) {
-		$crumbs = lunar_get_breadcrumb_for_wiki_artikel();
+	if ( function_exists( 'lunar_core_is_wiki_article' ) && lunar_core_is_wiki_article() ) {
+		$crumbs = lunar_get_breadcrumb_for_wiki_article();
 	} elseif ( is_singular( 'post' ) ) {
 		$crumbs = lunar_get_breadcrumb_for_post();
 	} elseif ( is_tax( 'game' ) ) {
@@ -49,12 +49,12 @@ function lunar_breadcrumb(): void {
 }
 
 /**
- * Builds the breadcrumb trail for a single Wiki Artikel:
+ * Builds the breadcrumb trail for a single Wiki Article:
  * Beranda > Franchise > Judul Spesifik > Tipe Konten > Judul Artikel.
  *
  * @return array<int, array{label: string, url: string}>
  */
-function lunar_get_breadcrumb_for_wiki_artikel(): array {
+function lunar_get_breadcrumb_for_wiki_article(): array {
 	$crumbs = array(
 		array(
 			'label' => __( 'Beranda', 'lunar' ),
@@ -86,23 +86,28 @@ function lunar_get_breadcrumb_for_wiki_artikel(): array {
 		);
 	}
 
-	$tipe_konten_terms = get_the_terms( get_the_ID(), 'tipe_konten' );
+	$content_type_slug  = function_exists( 'lunar_core_get_taxonomy_slug_content_type' )
+		? lunar_core_get_taxonomy_slug_content_type()
+		: '';
+	$content_type_terms = $content_type_slug
+		? get_the_terms( get_the_ID(), $content_type_slug )
+		: false;
 
-	if ( is_array( $tipe_konten_terms ) && ! empty( $tipe_konten_terms ) ) {
-		$tipe_konten     = $tipe_konten_terms[0];
-		$tipe_konten_url = '';
+	if ( is_array( $content_type_terms ) && ! empty( $content_type_terms ) ) {
+		$content_type     = $content_type_terms[0];
+		$content_type_url = '';
 
 		// Links to the game's archive page pre-filtered by this content
 		// type — relies on WordPress's native support for combining two
-		// registered taxonomy query vars (game + tipe_konten) in one
+		// registered taxonomy query vars (game + content type) in one
 		// request, so no custom pre_get_posts filtering is needed.
 		if ( '' !== $game_url ) {
-			$tipe_konten_url = add_query_arg( 'tipe_konten', $tipe_konten->slug, $game_url );
+			$content_type_url = add_query_arg( $content_type_slug, $content_type->slug, $game_url );
 		}
 
 		$crumbs[] = array(
-			'label' => $tipe_konten->name,
-			'url'   => $tipe_konten_url,
+			'label' => $content_type->name,
+			'url'   => $content_type_url,
 		);
 	}
 
