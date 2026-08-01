@@ -1,8 +1,8 @@
 <?php
 /**
  * Single Post template — for the native WordPress 'post' post type only
- * (blog posts, site announcements). Distinct from Wiki Artikel, which
- * has its own dedicated single-wiki_artikel.php: no Infobox sidebar,
+ * (blog posts, site announcements). Distinct from Wiki Article, which
+ * has its own dedicated single-wiki_article.php: no Infobox sidebar,
  * category badge comes from native WordPress Categories instead of
  * the Tipe Konten taxonomy, and the footer shows Tags plus a Related
  * Posts section instead of a changelog.
