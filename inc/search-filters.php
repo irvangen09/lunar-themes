@@ -1,6 +1,6 @@
 <?php
 /**
- * Modifies the main search query: restricts results to Wiki Artikel
+ * Modifies the main search query: restricts results to Wiki Article
  * only (Pages and any other post type are excluded from search results),
  * applies the "Game Title" checkbox filter, and applies the contextual
  * field-sync filters (Tier Alat, Peran, etc.).
@@ -25,24 +25,23 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Human-readable label for a recognized field-sync field. Falls back to
- * a generic title-cased label for any field not explicitly listed here,
- * so a newly recognized field still displays reasonably without a
- * required update to this map.
+ * Human-readable label for a recognized field-sync field — resolved
+ * from the actual admin-defined term name in the Field taxonomy
+ * (via the companion plugin's public API), not a locally maintained
+ * dictionary. This avoids repeating the exact "dictionary that forgets
+ * to stay in sync" problem this refactor just removed on the plugin
+ * side: a label map here would need updating every time a field is
+ * added, renamed, or removed in wp-admin, with nothing enforcing it.
  *
- * @param string $field Field slug (e.g. 'tier_alat').
+ * @param string $field Field slug (e.g. 'role').
  * @return string
  */
 function lunar_get_field_label( string $field ): string {
-	$labels = array(
-		'peran'        => __( 'Peran', 'lunar' ),
-		'tier_alat'    => __( 'Tier Alat', 'lunar' ),
-		'musim'        => __( 'Musim', 'lunar' ),
-		'waktu_muncul' => __( 'Waktu Muncul', 'lunar' ),
-		'jenis_hasil'  => __( 'Jenis Hasil', 'lunar' ),
-	);
+	if ( function_exists( 'lunar_core_get_field_label' ) ) {
+		return lunar_core_get_field_label( $field );
+	}
 
-	return $labels[ $field ] ?? ucwords( str_replace( '_', ' ', $field ) );
+	return ucwords( str_replace( array( '_', '-' ), ' ', $field ) );
 }
 
 /**
@@ -75,12 +74,12 @@ function lunar_get_selected_game_slugs(): array {
  * @return array<string, string[]> Field slug => list of distinct values.
  */
 function lunar_get_active_field_filters(): array {
-	if ( ! function_exists( 'lunar_core_get_recognized_fields' ) ) {
+	if ( ! function_exists( 'lunar_core_get_recognized_fields' ) || ! function_exists( 'lunar_core_get_post_type_slug' ) ) {
 		return array();
 	}
 
 	$args = array(
-		'post_type'      => 'wiki_artikel',
+		'post_type'      => lunar_core_get_post_type_slug(),
 		'post_status'    => 'publish',
 		'fields'         => 'ids',
 		'posts_per_page' => -1,
@@ -94,10 +93,14 @@ function lunar_get_active_field_filters(): array {
 
 	$tax_query = array();
 
-	$active_tipe = sanitize_title( (string) get_query_var( 'tipe_konten' ) );
+	$content_type_slug = function_exists( 'lunar_core_get_taxonomy_slug_content_type' )
+		? lunar_core_get_taxonomy_slug_content_type()
+		: '';
+	$active_tipe        = $content_type_slug ? sanitize_title( (string) get_query_var( $content_type_slug ) ) : '';
+
 	if ( '' !== $active_tipe ) {
 		$tax_query[] = array(
-			'taxonomy' => 'tipe_konten',
+			'taxonomy' => $content_type_slug,
 			'field'    => 'slug',
 			'terms'    => $active_tipe,
 		);
@@ -149,7 +152,15 @@ function lunar_get_active_field_filters(): array {
 			continue;
 		}
 
-		if ( 'tier_alat' === $field ) {
+		// The slug check below assumes WordPress's default term slug
+		// sanitization for a term named "Tier Alat" (spaces become
+		// hyphens: "tier-alat"). If this field is ever recreated in
+		// wp-admin with a manually edited slug that doesn't match, this
+		// custom ordering silently falls back to plain alphabetical sort
+		// below — it fails gracefully, not with an error, but the tier
+		// progression display order would then need this string updated
+		// to match whatever slug was actually assigned.
+		if ( 'tier-alat' === $field ) {
 			$tier_order = array( 'Kayu', 'Perunggu', 'Perak', 'Emas', 'Mystrile' );
 			usort(
 				$values,
@@ -168,7 +179,7 @@ function lunar_get_active_field_filters(): array {
 }
 
 /**
- * Restricts the main search query to the Wiki Artikel post type.
+ * Restricts the main search query to the Wiki Article post type.
  *
  * @param WP_Query $query The query being filtered.
  */
@@ -177,7 +188,11 @@ function lunar_restrict_search_post_type( WP_Query $query ): void {
 		return;
 	}
 
-	$query->set( 'post_type', 'wiki_artikel' );
+	if ( ! function_exists( 'lunar_core_get_post_type_slug' ) ) {
+		return; // Plugin inactive -- leave WordPress's default search post types alone.
+	}
+
+	$query->set( 'post_type', lunar_core_get_post_type_slug() );
 }
 add_action( 'pre_get_posts', 'lunar_restrict_search_post_type' );
 
@@ -281,8 +296,8 @@ add_action( 'pre_get_posts', 'lunar_filter_search_by_fields' );
 /**
  * Cancels WordPress's automatic canonical redirect specifically when it
  * would turn a Tipe Konten pill click (on the Search page or the Game
- * archive page) into a request for the plain Tipe Konten taxonomy
- * archive URL (e.g. /tipe-konten/karakter/).
+ * archive page) into a request for the plain Content Type taxonomy
+ * archive URL (e.g. /content-type/karakter/).
  *
  * That archive was intentionally never built (a cross-game Tipe Konten
  * listing mixes unrelated content and was cancelled early on), so
@@ -295,33 +310,39 @@ add_action( 'pre_get_posts', 'lunar_filter_search_by_fields' );
  * redirect_canonical action outright: redirect_canonical() still runs
  * its full logic for every other reason it might redirect a request
  * (trailing slash, wrong case, etc.) — only the one specific,
- * already-computed redirect toward the Tipe Konten archive is
+ * already-computed redirect toward the Content Type archive is
  * cancelled, and only when it's actually that redirect.
  *
- * Checking for "tipe_konten" as a $_GET key (query-string form) rather
- * than requiring "s" to also be present is deliberate and still safe:
- * a genuine visit to the pretty-permalink archive URL never populates
- * $_GET with it — rewrite rules resolve straight to query vars — so
- * this only ever matches links our own pill filters generate.
+ * Checking for the content type slug as a $_GET key (query-string form)
+ * rather than requiring "s" to also be present is deliberate and still
+ * safe: a genuine visit to the pretty-permalink archive URL never
+ * populates $_GET with it — rewrite rules resolve straight to query
+ * vars — so this only ever matches links our own pill filters generate.
  *
  * @param string|false $redirect_url  The redirect target WordPress computed, or false.
  * @param string       $requested_url The originally requested URL.
  * @return string|false
  */
 function lunar_prevent_search_canonical_redirect( $redirect_url, string $requested_url ) {
-	if ( false === $redirect_url || ! isset( $_GET['tipe_konten'] ) ) {
+	if ( false === $redirect_url || ! function_exists( 'lunar_core_get_taxonomy_slug_content_type' ) ) {
 		return $redirect_url;
 	}
 
-	$tipe_konten_tax = get_taxonomy( 'tipe_konten' );
+	$content_type_slug = lunar_core_get_taxonomy_slug_content_type();
 
-	if ( ! ( $tipe_konten_tax instanceof WP_Taxonomy ) ) {
+	if ( ! isset( $_GET[ $content_type_slug ] ) ) {
 		return $redirect_url;
 	}
 
-	$archive_slug = ( is_array( $tipe_konten_tax->rewrite ) && ! empty( $tipe_konten_tax->rewrite['slug'] ) )
-		? $tipe_konten_tax->rewrite['slug']
-		: $tipe_konten_tax->name;
+	$content_type_tax = get_taxonomy( $content_type_slug );
+
+	if ( ! ( $content_type_tax instanceof WP_Taxonomy ) ) {
+		return $redirect_url;
+	}
+
+	$archive_slug = ( is_array( $content_type_tax->rewrite ) && ! empty( $content_type_tax->rewrite['slug'] ) )
+		? $content_type_tax->rewrite['slug']
+		: $content_type_tax->name;
 
 	$redirect_path = (string) wp_parse_url( $redirect_url, PHP_URL_PATH );
 
@@ -334,8 +355,8 @@ function lunar_prevent_search_canonical_redirect( $redirect_url, string $request
 add_filter( 'redirect_canonical', 'lunar_prevent_search_canonical_redirect', 10, 2 );
 
 /**
- * Redirects a direct visit to the plain Tipe Konten taxonomy archive
- * (e.g. /tipe-konten/karakter/) to the Search page with that Tipe
+ * Redirects a direct visit to the plain Content Type taxonomy archive
+ * (e.g. /content-type/karakter/) to the Search page with that Tipe
  * Konten filter already active, instead of letting it fall through to
  * the generic, unstyled archive template.
  *
@@ -350,8 +371,14 @@ add_filter( 'redirect_canonical', 'lunar_prevent_search_canonical_redirect', 10,
  * Hierarchy — so that case reaches search.php on its own and is left
  * alone here.
  */
-function lunar_redirect_tipe_konten_archive(): void {
-	if ( is_admin() || is_search() || ! is_tax( 'tipe_konten' ) ) {
+function lunar_redirect_content_type_archive(): void {
+	if ( ! function_exists( 'lunar_core_get_taxonomy_slug_content_type' ) ) {
+		return;
+	}
+
+	$content_type_slug = lunar_core_get_taxonomy_slug_content_type();
+
+	if ( is_admin() || is_search() || ! is_tax( $content_type_slug ) ) {
 		return;
 	}
 
@@ -361,7 +388,7 @@ function lunar_redirect_tipe_konten_archive(): void {
 		return;
 	}
 
-	wp_safe_redirect( home_url( '/?s=&tipe_konten=' . rawurlencode( $term->slug ) ), 301 );
+	wp_safe_redirect( home_url( '/?s=&' . $content_type_slug . '=' . rawurlencode( $term->slug ) ), 301 );
 	exit;
 }
-add_action( 'template_redirect', 'lunar_redirect_tipe_konten_archive' );
+add_action( 'template_redirect', 'lunar_redirect_content_type_archive' );
