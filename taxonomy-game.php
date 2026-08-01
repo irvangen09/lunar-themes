@@ -18,6 +18,13 @@ get_header();
 
 $lunar_term = get_queried_object();
 
+// Computed once and reused below — the slug is used as the taxonomy name,
+// the query var name, and the add_query_arg() key (they're all the same
+// value here, since the taxonomy is registered with query_var => true).
+$lunar_content_type_slug = function_exists( 'lunar_core_get_taxonomy_slug_content_type' )
+	? lunar_core_get_taxonomy_slug_content_type()
+	: '';
+
 lunar_breadcrumb();
 ?>
 
@@ -45,7 +52,7 @@ lunar_breadcrumb();
 
 		<?php
 		$lunar_content_types  = lunar_get_content_types_for_game( $lunar_term->term_id );
-		$lunar_active_tipe    = sanitize_title( (string) get_query_var( 'tipe_konten' ) );
+		$lunar_active_tipe    = sanitize_title( (string) get_query_var( $lunar_content_type_slug ) );
 		$lunar_archive_url    = get_term_link( $lunar_term );
 		$lunar_archive_url    = is_wp_error( $lunar_archive_url ) ? '' : $lunar_archive_url;
 
@@ -67,7 +74,7 @@ lunar_breadcrumb();
 				<?php foreach ( $lunar_content_types as $lunar_type ) : ?>
 					<a
 						class="lunar-filter-pill<?php echo $lunar_active_tipe === $lunar_type->slug ? ' is-active' : ''; ?>"
-						href="<?php echo esc_url( add_query_arg( 'tipe_konten', $lunar_type->slug, $lunar_archive_url ) ); ?>"
+						href="<?php echo esc_url( add_query_arg( $lunar_content_type_slug, $lunar_type->slug, $lunar_archive_url ) ); ?>"
 					>
 						<?php echo esc_html( $lunar_type->name ); ?> (<?php echo (int) $lunar_type->count; ?>)
 					</a>
@@ -88,8 +95,10 @@ lunar_breadcrumb();
 			while ( have_posts() ) :
 				the_post();
 
-				$lunar_tipe_konten_terms = get_the_terms( get_the_ID(), 'tipe_konten' );
-				$lunar_article_game_term = null;
+				$lunar_content_type_terms = $lunar_content_type_slug
+					? get_the_terms( get_the_ID(), $lunar_content_type_slug )
+					: false;
+				$lunar_article_game_term  = null;
 
 				if ( $lunar_is_franchise_level ) {
 					$lunar_article_game_terms = get_the_terms( get_the_ID(), 'game' );
@@ -100,9 +109,9 @@ lunar_breadcrumb();
 				}
 				?>
 				<div class="lunar-archive-list-item">
-					<?php if ( is_array( $lunar_tipe_konten_terms ) && ! empty( $lunar_tipe_konten_terms ) ) : ?>
+					<?php if ( is_array( $lunar_content_type_terms ) && ! empty( $lunar_content_type_terms ) ) : ?>
 						<span class="lunar-archive-list-item__badge">
-							<?php echo esc_html( $lunar_tipe_konten_terms[0]->name ); ?>
+							<?php echo esc_html( $lunar_content_type_terms[0]->name ); ?>
 						</span>
 					<?php endif; ?>
 					<a class="lunar-archive-list-item__title" href="<?php the_permalink(); ?>">
