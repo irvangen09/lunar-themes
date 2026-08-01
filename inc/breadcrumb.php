@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Outputs the breadcrumb trail for the current request.
  */
 function lunar_breadcrumb(): void {
-	if ( function_exists( 'lunar_core_is_wiki_article' ) && lunar_core_is_wiki_article() ) {
+	if ( function_exists( 'lunar_core_get_post_type_slug' ) && is_singular( lunar_core_get_post_type_slug() ) ) {
 		$crumbs = lunar_get_breadcrumb_for_wiki_article();
 	} elseif ( is_singular( 'post' ) ) {
 		$crumbs = lunar_get_breadcrumb_for_post();

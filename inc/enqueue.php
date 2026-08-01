@@ -68,7 +68,7 @@ function lunar_enqueue_assets(): void {
 	// guard for every conditional that needs to know if this is a Wiki
 	// Article (post_type slug is owned by the companion plugin, not a
 	// literal this theme should hardcode).
-	$is_wiki_article = function_exists( 'lunar_core_is_wiki_article' ) && lunar_core_is_wiki_article();
+	$is_wiki_article = function_exists( 'lunar_core_get_post_type_slug' ) && is_singular( lunar_core_get_post_type_slug() );
 
 	wp_enqueue_style(
 		'lunar-fonts',

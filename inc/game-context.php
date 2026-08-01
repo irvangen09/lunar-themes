@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return WP_Term|null
  */
 function lunar_get_current_game_term(): ?WP_Term {
-	if ( function_exists( 'lunar_core_is_wiki_article' ) && lunar_core_is_wiki_article() ) {
+	if ( function_exists( 'lunar_core_get_post_type_slug' ) && is_singular( lunar_core_get_post_type_slug() ) ) {
 		$terms = get_the_terms( get_the_ID(), 'game' );
 
 		if ( ! is_array( $terms ) ) {
