@@ -45,7 +45,12 @@ lunar_breadcrumb();
 			while ( have_posts() ) :
 				the_post();
 
-				$lunar_tipe_konten_terms  = get_the_terms( get_the_ID(), 'tipe_konten' );
+				$lunar_content_type_slug  = function_exists( 'lunar_core_get_taxonomy_slug_content_type' )
+					? lunar_core_get_taxonomy_slug_content_type()
+					: '';
+				$lunar_content_type_terms = $lunar_content_type_slug
+					? get_the_terms( get_the_ID(), $lunar_content_type_slug )
+					: false;
 				$lunar_article_game_term  = null;
 				$lunar_article_game_terms = get_the_terms( get_the_ID(), 'game' );
 
@@ -54,9 +59,9 @@ lunar_breadcrumb();
 				}
 				?>
 				<div class="lunar-archive-list-item">
-					<?php if ( is_array( $lunar_tipe_konten_terms ) && ! empty( $lunar_tipe_konten_terms ) ) : ?>
+					<?php if ( is_array( $lunar_content_type_terms ) && ! empty( $lunar_content_type_terms ) ) : ?>
 						<span class="lunar-archive-list-item__badge">
-							<?php echo esc_html( $lunar_tipe_konten_terms[0]->name ); ?>
+							<?php echo esc_html( $lunar_content_type_terms[0]->name ); ?>
 						</span>
 					<?php endif; ?>
 					<a class="lunar-archive-list-item__title" href="<?php the_permalink(); ?>">
