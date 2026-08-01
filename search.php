@@ -18,19 +18,29 @@ global $wp_query;
 
 get_header();
 
-$lunar_search_query   = get_search_query();
-$lunar_game_terms      = lunar_get_game_terms();
-$lunar_selected_games  = isset( $_GET['games'] ) ? array_map( 'sanitize_title', (array) wp_unslash( $_GET['games'] ) ) : array();
-$lunar_active_tipe     = sanitize_title( (string) get_query_var( 'tipe_konten' ) );
-$lunar_tipe_konten_all = get_terms(
-	array(
-		'taxonomy'   => 'tipe_konten',
-		'hide_empty' => true,
-	)
-);
+$lunar_search_query      = get_search_query();
+$lunar_game_terms        = lunar_get_game_terms();
+$lunar_selected_games    = isset( $_GET['games'] ) ? array_map( 'sanitize_title', (array) wp_unslash( $_GET['games'] ) ) : array();
 
-if ( ! is_array( $lunar_tipe_konten_all ) ) {
-	$lunar_tipe_konten_all = array();
+// Computed once and reused below — the slug is used as the taxonomy name,
+// the query var name, the hidden form field name, and the
+// add_query_arg()/remove_query_arg() key (they're all the same value
+// here, since the taxonomy is registered with query_var => true).
+$lunar_content_type_slug = function_exists( 'lunar_core_get_taxonomy_slug_content_type' )
+	? lunar_core_get_taxonomy_slug_content_type()
+	: '';
+$lunar_active_tipe       = sanitize_title( (string) get_query_var( $lunar_content_type_slug ) );
+$lunar_content_type_all  = $lunar_content_type_slug
+	? get_terms(
+		array(
+			'taxonomy'   => $lunar_content_type_slug,
+			'hide_empty' => true,
+		)
+	)
+	: array();
+
+if ( ! is_array( $lunar_content_type_all ) ) {
+	$lunar_content_type_all = array();
 }
 
 // Current full URL (with existing query args) — used as the base for
@@ -61,7 +71,7 @@ if ( isset( $_GET['fields'] ) && is_array( $_GET['fields'] ) ) {
 			<input type="text" name="s" value="<?php echo esc_attr( $lunar_search_query ); ?>" placeholder="<?php esc_attr_e( 'Cari artikel...', 'lunar' ); ?>">
 
 			<?php if ( '' !== $lunar_active_tipe ) : ?>
-				<input type="hidden" name="tipe_konten" value="<?php echo esc_attr( $lunar_active_tipe ); ?>">
+				<input type="hidden" name="<?php echo esc_attr( $lunar_content_type_slug ); ?>" value="<?php echo esc_attr( $lunar_active_tipe ); ?>">
 			<?php endif; ?>
 
 			<?php foreach ( $lunar_game_terms as $lunar_game_term ) : ?>
@@ -116,18 +126,18 @@ if ( isset( $_GET['fields'] ) && is_array( $_GET['fields'] ) ) {
 		<?php endif; ?>
 	</section>
 
-	<?php if ( ! empty( $lunar_tipe_konten_all ) ) : ?>
+	<?php if ( ! empty( $lunar_content_type_all ) ) : ?>
 		<nav class="lunar-filter-bar" aria-label="<?php esc_attr_e( 'Filter Tipe Konten', 'lunar' ); ?>">
 			<a
 				class="lunar-filter-pill<?php echo '' === $lunar_active_tipe ? ' is-active' : ''; ?>"
-				href="<?php echo esc_url( remove_query_arg( 'tipe_konten', $lunar_current_url ) ); ?>"
+				href="<?php echo esc_url( remove_query_arg( $lunar_content_type_slug, $lunar_current_url ) ); ?>"
 			>
 				<?php esc_html_e( 'Semua', 'lunar' ); ?>
 			</a>
-			<?php foreach ( $lunar_tipe_konten_all as $lunar_type ) : ?>
+			<?php foreach ( $lunar_content_type_all as $lunar_type ) : ?>
 				<a
 					class="lunar-filter-pill<?php echo $lunar_active_tipe === $lunar_type->slug ? ' is-active' : ''; ?>"
-					href="<?php echo esc_url( add_query_arg( 'tipe_konten', $lunar_type->slug, $lunar_current_url ) ); ?>"
+					href="<?php echo esc_url( add_query_arg( $lunar_content_type_slug, $lunar_type->slug, $lunar_current_url ) ); ?>"
 				>
 					<?php echo esc_html( $lunar_type->name ); ?>
 				</a>
@@ -142,8 +152,10 @@ if ( isset( $_GET['fields'] ) && is_array( $_GET['fields'] ) ) {
 			while ( have_posts() ) :
 				the_post();
 
-				$lunar_game_post_terms  = get_the_terms( get_the_ID(), 'game' );
-				$lunar_tipe_post_terms  = get_the_terms( get_the_ID(), 'tipe_konten' );
+				$lunar_game_post_terms         = get_the_terms( get_the_ID(), 'game' );
+				$lunar_content_type_post_terms = $lunar_content_type_slug
+					? get_the_terms( get_the_ID(), $lunar_content_type_slug )
+					: false;
 				?>
 				<div class="lunar-result-item">
 					<span class="lunar-result-item__game">
@@ -155,8 +167,8 @@ if ( isset( $_GET['fields'] ) && is_array( $_GET['fields'] ) ) {
 					</span>
 					<span class="lunar-result-item__type">
 						<?php
-						if ( is_array( $lunar_tipe_post_terms ) && ! empty( $lunar_tipe_post_terms ) ) {
-							echo esc_html( $lunar_tipe_post_terms[0]->name );
+						if ( is_array( $lunar_content_type_post_terms ) && ! empty( $lunar_content_type_post_terms ) ) {
+							echo esc_html( $lunar_content_type_post_terms[0]->name );
 						}
 						?>
 					</span>
