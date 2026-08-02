@@ -408,6 +408,14 @@ add_action( 'template_redirect', 'lunar_redirect_content_type_archive' );
  * relying on is_tax()/get_query_var(), which this unregistered rewrite
  * never populates) is what makes this reliable regardless of how
  * WordPress's default routing happens to handle the unmatched path.
+ *
+ * Hooked at priority 1 (earlier than the default 10) so it runs BEFORE
+ * WordPress core's own redirect_canonical() — which is also hooked to
+ * template_redirect, at the default priority, and calls exit() as soon
+ * as it decides on a redirect target. At the default priority this
+ * function never got a chance to run at all: core's canonical-guessing
+ * logic already redirected the unmatched path to the homepage and
+ * exited first.
  */
 function lunar_block_field_taxonomy_urls(): void {
 	if ( is_admin() || ! function_exists( 'lunar_core_get_taxonomy_slug_field' ) ) {
@@ -436,4 +444,4 @@ function lunar_block_field_taxonomy_urls(): void {
 	status_header( 404 );
 	nocache_headers();
 }
-add_action( 'template_redirect', 'lunar_block_field_taxonomy_urls' );
+add_action( 'template_redirect', 'lunar_block_field_taxonomy_urls', 1 );
