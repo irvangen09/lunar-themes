@@ -392,3 +392,48 @@ function lunar_redirect_content_type_archive(): void {
 	exit;
 }
 add_action( 'template_redirect', 'lunar_redirect_content_type_archive' );
+
+/**
+ * Forces a proper 404 for any URL starting with the Field taxonomy's
+ * slug (e.g. /wiki_field/role/), instead of whatever WordPress happens
+ * to fall back to when a path segment doesn't match any registered
+ * rewrite rule.
+ *
+ * The Field taxonomy is intentionally registered without a public
+ * rewrite rule at all (it's an internal-only taxonomy, see the
+ * companion plugin's Taxonomies class) — so this isn't a redirect away
+ * from a real archive like the Content Type guard above, it's purely a
+ * defensive net for a URL pattern that was never meant to resolve to
+ * anything. Checking the raw request path directly (rather than
+ * relying on is_tax()/get_query_var(), which this unregistered rewrite
+ * never populates) is what makes this reliable regardless of how
+ * WordPress's default routing happens to handle the unmatched path.
+ */
+function lunar_block_field_taxonomy_urls(): void {
+	if ( is_admin() || ! function_exists( 'lunar_core_get_taxonomy_slug_field' ) ) {
+		return;
+	}
+
+	$field_slug = lunar_core_get_taxonomy_slug_field();
+
+	$home_path = (string) wp_parse_url( home_url(), PHP_URL_PATH );
+	$home_path = '/' . trim( $home_path, '/' );
+	if ( '/' === $home_path ) {
+		$home_path = '';
+	}
+
+	$request_path = (string) wp_parse_url( (string) ( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_PATH );
+	$request_path = rtrim( (string) $request_path, '/' );
+
+	$field_prefix = $home_path . '/' . $field_slug;
+
+	if ( $request_path !== $field_prefix && 0 !== strpos( $request_path, $field_prefix . '/' ) ) {
+		return;
+	}
+
+	global $wp_query;
+	$wp_query->set_404();
+	status_header( 404 );
+	nocache_headers();
+}
+add_action( 'template_redirect', 'lunar_block_field_taxonomy_urls' );
